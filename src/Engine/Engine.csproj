@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0;netstandard2.1</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>Red</PackageId>
+        <Version>0.1.0</Version>
+        <Title>Red Engine</Title>
+        <Authors>Red Engine Games</Authors>
+        <Description>Red Engine is a WebGPU graphics rendering engine written in Blazingly Fast unsafe C#. It supports all platforms, all backends, all shader codes. Vulkan, Metal, DirectX, OpenGL, OpenAL, SDL3, GLSL, SPIRV, HLSL, and a blazingly fast unsafe C# stb_image native, so you don't have to rely on GDI+ at all.</Description>
+        <Copyright>2021-2023</Copyright>
+        <PackageProjectUrl>https://github.com/redenginegames/red</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/redenginegames/red</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Company>Red Engine Games, LLC</Company>
+        <Product>Red Engine</Product>
+        <AssemblyVersion>0.1.0</AssemblyVersion>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>signing.key.snk</AssemblyOriginatorKeyFile>
+        <PublicSign>true</PublicSign>
+        <RootNamespace>Reactor</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="SharpFont.NetStandard" Version="1.0.5" />
+      <PackageReference Include="System.Memory" Version="4.5.5" />
+    </ItemGroup>
+    
+    
+</Project>

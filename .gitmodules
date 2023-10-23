@@ -1,0 +1,9 @@
+[submodule "dependencies/SDL"]
+	path = dependencies/SDL
+	url = git@github.com:libsdl-org/SDL.git
+[submodule "dependencies/wgpu"]
+	path = dependencies/wgpu
+	url = git@github.com:gfx-rs/wgpu.git
+[submodule "dependencies/wgpu-native"]
+	path = dependencies/wgpu-native
+	url = git@github.com:gfx-rs/wgpu-native.git

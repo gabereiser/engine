@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	  <TargetFramework>net7.0-windows10.0.22000.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <UseWindowsForms>True</UseWindowsForms>
+    <StartupObject>Chamber.Program</StartupObject>
+  </PropertyGroup>
+</Project>

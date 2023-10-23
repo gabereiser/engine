@@ -1,9 +1,11 @@
 .idea
 .vscode
 .DS_Store
-
+[Bb]in
+[Oo]bj
 [Bb]uild
 [Rr]elease
+[Tt]arget
 
 *.pem
 *.crt
