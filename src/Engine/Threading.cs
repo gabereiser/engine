@@ -50,8 +50,8 @@ namespace Reactor
 
         public static void RunOnPool(Action action)
         {
-            var task = Task.Factory.StartNew(action);
-            task.Start(TaskScheduler.Default);
+            Task.Factory.StartNew(action);
+            
         }
 
         public static void Queue(Action action)

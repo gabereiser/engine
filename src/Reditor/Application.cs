@@ -41,7 +41,6 @@ namespace Red
             {
                 input.Keyboards[i].KeyDown += KeyDown;
             }*/
-            
         }
 
         void OnClosing(object sender, CancelEventArgs args)

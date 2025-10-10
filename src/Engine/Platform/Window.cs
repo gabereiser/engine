@@ -19,9 +19,12 @@ namespace Reactor.Platform
         public Action Load;
         public Action Resize;
 
-        public Window(string title) : base(1280, 720, title)
+        public Window(string title) : this(title, new Size(1280, 720))
         {
+        }
 
+        public Window(string title, Size size) : base(size.Width, size.Height, title)
+        {
             Refreshed += (o, s) => { Log.Debug("Window Refreshed"); };
             FramebufferSizeChanged += (o, size) =>
             {
@@ -41,6 +44,11 @@ namespace Reactor.Platform
                 throw new Exception("Unable to initialize Glfw");
             
             Glfw.WindowHint(Hint.ClientApi, ClientApi.None);
+        }
+
+        internal static Monitor PrimaryMonitor()
+        {
+            return Glfw.PrimaryMonitor;
         }
         void register()
         {

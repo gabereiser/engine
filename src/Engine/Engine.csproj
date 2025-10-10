@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0;netstandard2.1</TargetFrameworks>
+        <TargetFrameworks>net8.0;net7.0</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>Red</PackageId>
         <Version>0.1.0</Version>
@@ -30,10 +30,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+      <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="SharpFont.NetStandard" Version="1.0.5" />
-      <PackageReference Include="System.Memory" Version="4.5.5" />
+      <PackageReference Include="System.Memory" Version="4.6.0" />
     </ItemGroup>
     
     

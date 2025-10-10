@@ -28,7 +28,8 @@ namespace Reactor
         {
             Instance = this;
             Window.GlfwInit();
-            Window = new Window(title);
+            var monitor = Window.PrimaryMonitor();
+            Window = new Window(title, monitor.WorkArea.Size);
             
             renderTimer = new Stopwatch();
             updateTimer = new Stopwatch();
@@ -60,11 +61,18 @@ namespace Reactor
                 
                 resetTimers();
                 initTimers();
-
-                var delta = renderTimer.Elapsed.TotalSeconds;
-                Render?.Invoke(delta);
-                delta = updateTimer.Elapsed.TotalSeconds;
-                Update?.Invoke(delta);
+                
+                Threading.RunOnMain(() =>
+                {
+                    var delta = renderTimer.Elapsed.TotalSeconds;
+                    Render?.Invoke(delta);
+                });
+                Threading.RunOnPool(() =>
+                {
+                    var delta = updateTimer.Elapsed.TotalSeconds;
+                    Update?.Invoke(delta);
+                });
+                
 
                 Threading.Flush();
                 stopTimers();
