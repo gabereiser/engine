@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Reactor.Common;
-using Reactor.Platform;
+using Red.Common;
+using Red.Platform;
 using Timer = System.Timers.Timer;
 
-namespace Reactor
+namespace Red
 {
     public class Threading : Singleton<Threading>, IDisposable
     {
@@ -32,7 +32,7 @@ namespace Reactor
             {
                 while (queue.Count > 0)
                 {
-                    if(queue.TryDequeue(out var action))
+                    if (queue.TryDequeue(out var action))
                         action.Invoke();
                 }
             }
@@ -51,7 +51,7 @@ namespace Reactor
         public static void RunOnPool(Action action)
         {
             Task.Factory.StartNew(action);
-            
+
         }
 
         public static void Queue(Action action)
@@ -69,5 +69,5 @@ namespace Reactor
             return t;
         }
     }
-    
+
 }

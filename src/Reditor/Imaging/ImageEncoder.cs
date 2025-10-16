@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Reactor.Graphics;
-using Reactor.Types;
+using Red.Graphics;
+using Red.Types;
 
-namespace Red.Imaging
+namespace Reditor.Imaging
 {
     public class ImageEncoder
     {
@@ -22,21 +22,21 @@ namespace Red.Imaging
             red.Data = data;
             return red;
         }
-        
+
         public static RedFile SaveTexture(TextureCube texture, string name)
         {
             List<byte> data = new List<byte>();
-            
+
             var pixelFormat = texture.PositiveX.PixelFormat;
             var width = texture.PositiveX.Bounds.Width;
             var height = texture.PositiveX.Bounds.Height;
             var surface = SurfaceFormat.Color;
-            
+
             var red = new RedFile();
             red.Magic = new[] { 'R', 'E', 'D', '\0' };
             red.Name = name;
             red.DataType = (int)RedDataType.TextureCube;
-            
+
             data.AddRange(texture.PositiveX.GetData<byte>());
             data.AddRange(texture.NegativeX.GetData<byte>());
             data.AddRange(texture.PositiveY.GetData<byte>());

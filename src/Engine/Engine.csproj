@@ -1,24 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>net9.0</TargetFrameworks>
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' AND '$(PackAsTool)' != 'true'">$(NETCoreSdkRuntimeIdentifier)</RuntimeIdentifier>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageId>Red</PackageId>
+        <PackageId>Red.Engine</PackageId>
         <Version>0.1.0</Version>
         <Title>Red Engine</Title>
         <Authors>Red Engine Games</Authors>
         <Description>Red Engine is a WebGPU graphics rendering engine written in Blazingly Fast unsafe C#. It supports all platforms, all backends, all shader codes. Vulkan, Metal, DirectX, OpenGL, OpenAL, SDL3, GLSL, SPIRV, HLSL, and a blazingly fast unsafe C# stb_image native, so you don't have to rely on GDI+ at all.</Description>
         <Copyright>2021-2023</Copyright>
-        <PackageProjectUrl>https://github.com/redenginegames/red</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/redenginegames/red</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/gabereiser/engine</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/gabereiser/engine</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <Company>Red Engine Games, LLC</Company>
+        <Company>Red Engine Games</Company>
         <Product>Red Engine</Product>
         <AssemblyVersion>0.1.0</AssemblyVersion>
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>signing.key.snk</AssemblyOriginatorKeyFile>
-        <PublicSign>true</PublicSign>
-        <RootNamespace>Reactor</RootNamespace>
+        <RootNamespace>Red</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

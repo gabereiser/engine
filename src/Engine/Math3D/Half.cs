@@ -60,7 +60,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     /// <summary>
     ///     The name Half is derived from half-precision floating-point number.

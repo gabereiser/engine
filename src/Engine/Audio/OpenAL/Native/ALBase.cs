@@ -13,7 +13,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     /// <summary>
     ///     This is a base class for OpenAL APIs that are using DllImport and want to resolve different dll names on different

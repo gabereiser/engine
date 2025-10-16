@@ -7,7 +7,7 @@
 // of the MIT license. See the LICENSE file for details.
 //
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
 #pragma warning disable SA1402 // File may only contain a single type
     /// <summary>A list of valid Enable/Disable/IsEnabled parameters.</summary>

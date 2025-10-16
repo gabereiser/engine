@@ -23,7 +23,7 @@
 
 using System;
 
-namespace Reactor.Common
+namespace Red.Common
 {
     public abstract class Singleton<T> where T : class, new()
     {

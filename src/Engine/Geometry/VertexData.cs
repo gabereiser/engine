@@ -22,9 +22,9 @@
 // THE SOFTWARE.
 
 
-using Reactor.Math3D;
+using Red.Math3D;
 
-namespace Reactor.Geometry
+namespace Red.Geometry
 {
     public struct VertexData : IVertexType
     {

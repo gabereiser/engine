@@ -1,4 +1,4 @@
-﻿namespace Reactor.Types
+﻿namespace Red.Types
 {
     public class BlueFile
     {

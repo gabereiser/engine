@@ -8,126 +8,148 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reactor.Platform.glTF.Schema {
+namespace Red.Platform.glTF.Schema
+{
     using System.Linq;
     using System.Runtime.Serialization;
-    
-    
-    public class AccessorSparse {
-        
+
+
+    public class AccessorSparse
+    {
+
         /// <summary>
         /// Backing field for Count.
         /// </summary>
         private int m_count;
-        
+
         /// <summary>
         /// Backing field for Indices.
         /// </summary>
         private AccessorSparseIndices m_indices;
-        
+
         /// <summary>
         /// Backing field for Values.
         /// </summary>
         private AccessorSparseValues m_values;
-        
+
         /// <summary>
         /// Backing field for Extensions.
         /// </summary>
         private System.Collections.Generic.Dictionary<string, object> m_extensions;
-        
+
         /// <summary>
         /// Backing field for Extras.
         /// </summary>
         private Extras m_extras;
-        
+
         /// <summary>
         /// Number of deviating accessor values stored in the sparse array.
         /// </summary>
         [Newtonsoft.Json.JsonRequiredAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("count")]
-        public int Count {
-            get {
+        public int Count
+        {
+            get
+            {
                 return this.m_count;
             }
-            set {
-                if ((value < 1)) {
+            set
+            {
+                if ((value < 1))
+                {
                     throw new System.ArgumentOutOfRangeException("Count", value, "Expected value to be greater than or equal to 1");
                 }
                 this.m_count = value;
             }
         }
-        
+
         /// <summary>
         /// An object pointing to a buffer view containing the indices of deviating accessor values. The number of indices is equal to `count`. Indices **MUST** strictly increase.
         /// </summary>
         [Newtonsoft.Json.JsonRequiredAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("indices")]
-        public AccessorSparseIndices Indices {
-            get {
+        public AccessorSparseIndices Indices
+        {
+            get
+            {
                 return this.m_indices;
             }
-            set {
+            set
+            {
                 this.m_indices = value;
             }
         }
-        
+
         /// <summary>
         /// An object pointing to a buffer view containing the deviating accessor values.
         /// </summary>
         [Newtonsoft.Json.JsonRequiredAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("values")]
-        public AccessorSparseValues Values {
-            get {
+        public AccessorSparseValues Values
+        {
+            get
+            {
                 return this.m_values;
             }
-            set {
+            set
+            {
                 this.m_values = value;
             }
         }
-        
+
         /// <summary>
         /// JSON object with extension-specific objects.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("extensions")]
-        public System.Collections.Generic.Dictionary<string, object> Extensions {
-            get {
+        public System.Collections.Generic.Dictionary<string, object> Extensions
+        {
+            get
+            {
                 return this.m_extensions;
             }
-            set {
+            set
+            {
                 this.m_extensions = value;
             }
         }
-        
+
         /// <summary>
         /// Application-specific data.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("extras")]
-        public Extras Extras {
-            get {
+        public Extras Extras
+        {
+            get
+            {
                 return this.m_extras;
             }
-            set {
+            set
+            {
                 this.m_extras = value;
             }
         }
-        
-        public bool ShouldSerializeIndices() {
-            return ((m_indices == null) 
+
+        public bool ShouldSerializeIndices()
+        {
+            return ((m_indices == null)
                         == false);
         }
-        
-        public bool ShouldSerializeValues() {
-            return ((m_values == null) 
+
+        public bool ShouldSerializeValues()
+        {
+            return ((m_values == null)
                         == false);
         }
-        
-        public bool ShouldSerializeExtensions() {
-            return ((m_extensions == null) 
+
+        public bool ShouldSerializeExtensions()
+        {
+            return ((m_extensions == null)
                         == false);
         }
-        
-        public bool ShouldSerializeExtras() {
-            return ((m_extras == null) 
+
+        public bool ShouldSerializeExtras()
+        {
+            return ((m_extras == null)
                         == false);
         }
     }

@@ -27,7 +27,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     [Serializable]
     [StructLayout(LayoutKind.Explicit, Size = 12, Pack = 4)]
@@ -774,7 +774,7 @@ namespace Reactor.Math3D
 
 
         #region Operators
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Vector3 value1, Vector3 value2)
         {

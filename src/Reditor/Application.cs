@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
-using Reactor;
-using Reactor.Common;
-using Reactor.Graphics;
+using Red;
+using Red.Common;
+using Red.Graphics;
 
-namespace Red
+namespace Reditor
 {
-    public class Application : Reactor.Application
+    public class Application : Red.Application
     {
         public static void Main(string[] args)
         {
@@ -19,12 +19,12 @@ namespace Red
         private IGraphicsContext graphics;
         Application() : base("Reditor")
         {
-            
+
             Window.Load += OnLoad;
             Window.Resize += Resized;
-            
+
             Window.Closing += OnClosing;
-            
+
             Render += OnRender;
             Update += OnUpdate;
             Window.Init();
@@ -33,7 +33,7 @@ namespace Red
         void OnLoad()
         {
             graphics = Window.GetGraphicsContext();
-            
+
             //Set-up input context. Once we set the event handler, we don't need the context anymore. It's a good practice to save
             //it like we do the graphics context. Perhaps in the future when it's needed for UI.
             /*IInputContext input = Window.GetInputContext();
@@ -45,12 +45,12 @@ namespace Red
 
         void OnClosing(object sender, CancelEventArgs args)
         {
-            
+
         }
 
         void OnUpdate(double time)
         {
-            
+
         }
 
         void OnRender(double time)

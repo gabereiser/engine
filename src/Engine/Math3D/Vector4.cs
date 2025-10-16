@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     [Serializable]
     [StructLayout(LayoutKind.Explicit, Size = 16, Pack = 4)]

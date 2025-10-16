@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Reactor.Shading
+namespace Red.Shading
 {
     internal class ShaderSemantics : Dictionary<ShaderSemanticDefinition, ShaderSemantic>
     {
@@ -10,7 +10,7 @@ namespace Reactor.Shading
 
         internal ShaderSemantics(ref string source)
         {
-            source = Regex.Replace(source, PARSER_REGEX, delegate(Match match)
+            source = Regex.Replace(source, PARSER_REGEX, delegate (Match match)
             {
                 var semantic = new ShaderSemantic
                 {

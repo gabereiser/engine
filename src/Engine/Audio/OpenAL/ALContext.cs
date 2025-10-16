@@ -10,7 +10,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     public struct ALContext : IEquatable<ALContext>
     {

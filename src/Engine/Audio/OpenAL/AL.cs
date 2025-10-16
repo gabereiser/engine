@@ -9,10 +9,10 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Reactor.Audio.OpenAL.Native;
-using Reactor.Math3D;
+using Red.Audio.OpenAL.Native;
+using Red.Math3D;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     /// <summary>
     ///     Provides access to the OpenAL 1.1 flat API.

@@ -4,16 +4,16 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
 using GLFW;
-using Reactor.Common;
-using Reactor.Geometry;
-using Reactor.Graphics;
-using Reactor.Math3D;
-using Reactor.Platform.WGPU.Wrappers;
-using Reactor.Platform.WGPU;
+using Red.Common;
+using Red.Geometry;
+using Red.Graphics;
+using Red.Math3D;
+using Red.Platform.WGPU.Wrappers;
+using Red.Platform.WGPU;
 using System.Threading.Tasks;
 using System.Net.Http;
 
-namespace Reactor.Platform
+namespace Red.Platform
 {
     public class GPU : IGraphicsContext
     {
@@ -23,7 +23,7 @@ namespace Reactor.Platform
         internal static Surface Surface;
         internal static SwapChain SwapChain;
         internal static Queue Queue;
-        
+
         #region Public Static Methods
 
         public static void Register(Window window)
@@ -54,7 +54,7 @@ namespace Reactor.Platform
         }
         static void SetupDevice()
         {
-            
+
             Log.Debug("Initializing Device");
             Adapter.GetProperties(out var properties);
 
@@ -104,7 +104,7 @@ namespace Reactor.Platform
         static unsafe void SetupSwapChain(Adapter Adapter, Device Device)
         {
             Log.Debug("Initializing SwapChain");
-            
+
             var preferredFormat = Surface.GetPreferredFormat(Adapter);
             Glfw.GetFramebufferSize(Application.Instance.Window, out var width, out var height);
             swapChainDescriptor = new Wgpu.SwapChainDescriptor()
@@ -116,24 +116,25 @@ namespace Reactor.Platform
                 presentMode = Wgpu.PresentMode.Fifo,
                 nextInChain = default,
             };
-            
+
             SwapChain = Device.CreateSwapChain(Surface, swapChainDescriptor);
-            
-            var depthFormat = Wgpu.TextureFormat.Depth24Plus ;
+
+            var depthFormat = Wgpu.TextureFormat.Depth24Plus;
+
             depthBufferDescriptor = new Wgpu.TextureDescriptor()
             {
                 dimension = Wgpu.TextureDimension.TwoDimensions,
                 format = depthFormat,
                 label = "DepthBuffer",
                 sampleCount = 1U,
-                size = new Wgpu.Extent3D() { depthOrArrayLayers=1, height=swapChainDescriptor.height, width=swapChainDescriptor.width},
+                size = new Wgpu.Extent3D() { depthOrArrayLayers = 1, height = swapChainDescriptor.height, width = swapChainDescriptor.width },
                 mipLevelCount = 1,
                 usage = (uint)Wgpu.TextureUsage.RenderAttachment,
                 viewFormatCount = 1,
-                viewFormats = new IntPtr(&depthFormat),
+                viewFormats = &depthFormat,
             };
             DepthBuffer = GPU.Device.CreateTexture(depthBufferDescriptor);
-            
+
             DepthBufferView = DepthBuffer.CreateTextureView();
             Log.Debug("Initialization of SwapChain Complete.");
 
@@ -143,7 +144,7 @@ namespace Reactor.Platform
         {
             Surface = window.CreateWebGPUSurface(ref Instance);
         }
-    
+
         #endregion Public Static Methods
 
         #region Error Handling
@@ -172,7 +173,7 @@ namespace Reactor.Platform
                 SwapChain.Dispose();
                 Surface.Dispose();
             }
-        
+
         }
         void IGraphicsContext.CheckError()
         {
@@ -181,9 +182,9 @@ namespace Reactor.Platform
 
         public void Clear()
         {
-            
+
         }
-    
+
         private static RenderPass renderPass;
         internal static WGPU.Wrappers.Texture DepthBuffer { get; set; }
         internal static TextureView DepthBufferView { get; private set; }
@@ -195,7 +196,7 @@ namespace Reactor.Platform
             {
                 return;
             }
-                
+
             renderPass = new RenderPass();
             renderPass.Begin();
         }
@@ -223,7 +224,7 @@ namespace Reactor.Platform
             BackBuffer?.Dispose();
 
             renderPass?.Dispose();
-            
+
             SwapChain?.Dispose();
             Surface.Dispose();
             Surface = Application.Instance.Window.CreateWebGPUSurface(ref Instance);

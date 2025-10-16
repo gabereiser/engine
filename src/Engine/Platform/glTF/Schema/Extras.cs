@@ -8,11 +8,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reactor.Platform.glTF.Schema {
+namespace Red.Platform.glTF.Schema
+{
     using System.Linq;
     using System.Runtime.Serialization;
-    
-    
-    public class Extras {
+
+
+    public class Extras
+    {
     }
 }

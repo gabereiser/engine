@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Reactor.Common;
+using Red.Common;
 
-namespace Reactor.Platform.WGPU.Helpers
+namespace Red.Platform.WGPU.Helpers
 {
-    public class WgpuStructChain : IDisposable
+	public class WgpuStructChain : IDisposable
 	{
 		private readonly List<IntPtr> _pointers = new List<IntPtr>();
 		private readonly List<IntPtr> _trackedAllocatedData = new List<IntPtr>();
-        private IntPtr _pointer = IntPtr.Zero;
+		private IntPtr _pointer = IntPtr.Zero;
 
-        public IntPtr GetPointer()
-        {
-            return _pointer;
-        }
+		public IntPtr GetPointer()
+		{
+			return _pointer;
+		}
 
-        public WgpuStructChain AddPrimitiveDepthClipControl(bool unclippedDepth = default)
-        {
+		public WgpuStructChain AddPrimitiveDepthClipControl(bool unclippedDepth = default)
+		{
 			AddStruct(new Wgpu.PrimitiveDepthClipControl()
 			{
 				chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.PrimitiveDepthClipControl },
@@ -51,38 +51,46 @@ namespace Reactor.Platform.WGPU.Helpers
 			return this;
 		}
 
-		public WgpuStructChain AddShaderModuleGLSLDescriptor(string vertCode, string fragCode, string[] defines)
+		public WgpuStructChain AddShaderModuleGLSLDescriptor(string vertCode, string fragCode, Wgpu.ShaderDefine[] defines)
 		{
 			unsafe
 			{
-				AddStruct(new Wgpu.ShaderModuleGLSLDescriptor()
+				fixed (Wgpu.ShaderDefine* pDefine = defines)
 				{
-					chain = new Wgpu.ChainedStruct { sType = (Wgpu.SType)Wgpu.NativeSType.STypeShaderModuleGLSLDescriptor },
-					code = vertCode,
-					defineCount = (uint)defines.Length,
-					defines = TrackAllocatedData(Util.AllocHArray(defines)),
-					stage = Wgpu.ShaderStage.Vertex,
-				});
-				AddStruct(new Wgpu.ShaderModuleGLSLDescriptor()
-				{
-					chain = new Wgpu.ChainedStruct { sType = (Wgpu.SType)Wgpu.NativeSType.STypeShaderModuleGLSLDescriptor },
-					code = fragCode,
-					defineCount = (uint)defines.Length,
-					defines = TrackAllocatedData(Util.AllocHArray(defines)),
-					stage = Wgpu.ShaderStage.Fragment,
-				});
+					TrackAllocatedData((IntPtr)pDefine);
+					AddStruct(new Wgpu.ShaderModuleGLSLDescriptor()
+					{
+						chain = new Wgpu.ChainedStruct { sType = (Wgpu.SType)Wgpu.NativeSType.STypeShaderModuleGLSLDescriptor },
+						code = vertCode,
+						defineCount = (uint)defines.Length,
+						defines = pDefine,
+						stage = Wgpu.ShaderStage.Vertex,
+					});
+					AddStruct(new Wgpu.ShaderModuleGLSLDescriptor()
+					{
+						chain = new Wgpu.ChainedStruct { sType = (Wgpu.SType)Wgpu.NativeSType.STypeShaderModuleGLSLDescriptor },
+						code = fragCode,
+						defineCount = (uint)defines.Length,
+						defines = pDefine,
+						stage = Wgpu.ShaderStage.Fragment,
+					});
+				}
+
 			}
 
 			return this;
 		}
 
 		public WgpuStructChain AddSurfaceDescriptorFromAndroidNativeWindow(IntPtr window = default)
-        {
-			AddStruct(new Wgpu.SurfaceDescriptorFromAndroidNativeWindow()
+		{
+			unsafe
 			{
-				chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromAndroidNativeWindow },
-				window = window
-			});
+				AddStruct(new Wgpu.SurfaceDescriptorFromAndroidNativeWindow()
+				{
+					chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromAndroidNativeWindow },
+					window = window.ToPointer()
+				});
+			}
 
 			return this;
 		}
@@ -100,60 +108,70 @@ namespace Reactor.Platform.WGPU.Helpers
 
 		public WgpuStructChain AddSurfaceDescriptorFromMetalLayer(IntPtr layer = default)
 		{
-			AddStruct(new Wgpu.SurfaceDescriptorFromMetalLayer()
+			unsafe
 			{
-				chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromMetalLayer },
-				layer = layer
-			});
-
+				AddStruct(new Wgpu.SurfaceDescriptorFromMetalLayer()
+				{
+					chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromMetalLayer },
+					layer = layer.ToPointer()
+				});
+			}
 			return this;
 		}
 
 		public WgpuStructChain AddSurfaceDescriptorFromWaylandSurface(IntPtr display = default, IntPtr surface = default)
 		{
-			AddStruct(new Wgpu.SurfaceDescriptorFromWaylandSurface()
+			unsafe
 			{
-				chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromWaylandSurface },
-				display = display,
-				surface = surface
-			});
-
+				AddStruct(new Wgpu.SurfaceDescriptorFromWaylandSurface()
+				{
+					chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromWaylandSurface },
+					display = display.ToPointer(),
+					surface = surface.ToPointer()
+				});
+			}
 			return this;
 		}
 
 		public WgpuStructChain AddSurfaceDescriptorFromWindowsHWND(IntPtr hinstance = default, IntPtr hwnd = default)
 		{
-			AddStruct(new Wgpu.SurfaceDescriptorFromWindowsHWND()
+			unsafe
 			{
-				chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromWindowsHWND },
-				hinstance = hinstance,
-				hwnd = hwnd
-			});
-
+				AddStruct(new Wgpu.SurfaceDescriptorFromWindowsHWND()
+				{
+					chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromWindowsHWND },
+					hinstance = hinstance.ToPointer(),
+					hwnd = hwnd.ToPointer()
+				});
+			}
 			return this;
 		}
 
 		public WgpuStructChain AddSurfaceDescriptorFromXcbWindow(IntPtr connection = default, uint window = default)
 		{
-			AddStruct(new Wgpu.SurfaceDescriptorFromXcbWindow()
+			unsafe
 			{
-				chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromXcbWindow },
-				connection = connection,
-				window = window
-			});
-
+				AddStruct(new Wgpu.SurfaceDescriptorFromXcbWindow()
+				{
+					chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromXcbWindow },
+					connection = connection.ToPointer(),
+					window = window
+				});
+			}
 			return this;
 		}
 
 		public WgpuStructChain AddSurfaceDescriptorFromXlibWindow(IntPtr display = default, uint window = default)
 		{
-			AddStruct(new Wgpu.SurfaceDescriptorFromXlibWindow()
+			unsafe
 			{
-				chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromXlibWindow },
-				display = display,
-				window = window
-			});
-
+				AddStruct(new Wgpu.SurfaceDescriptorFromXlibWindow()
+				{
+					chain = new Wgpu.ChainedStruct { sType = Wgpu.SType.SurfaceDescriptorFromXlibWindow },
+					display = display.ToPointer(),
+					window = window
+				});
+			}
 			return this;
 		}
 
@@ -168,7 +186,7 @@ namespace Reactor.Platform.WGPU.Helpers
 			return this;
 		}
 
-        public WgpuStructChain AddRequiredLimitsExtras(uint maxPushConstantSize = default)
+		public WgpuStructChain AddRequiredLimitsExtras(uint maxPushConstantSize = default)
 		{
 			AddStruct(new Wgpu.RequiredLimitsExtras()
 			{
@@ -181,13 +199,18 @@ namespace Reactor.Platform.WGPU.Helpers
 
 		public WgpuStructChain AddPipelineLayoutExtras(Wgpu.PushConstantRange[] pushConstantRanges)
 		{
-			AddStruct(new Wgpu.PipelineLayoutExtras()
+			unsafe
 			{
-				chain = new Wgpu.ChainedStruct { sType = (Wgpu.SType)Wgpu.NativeSType.STypePipelineLayoutExtras },
-				pushConstantRangeCount = (uint)pushConstantRanges.Length,
-				pushConstantRanges = TrackAllocatedData(Util.AllocHArray(pushConstantRanges))
-			});
-
+				fixed (Wgpu.PushConstantRange* pPushConstantRanges = pushConstantRanges)
+				{
+					AddStruct(new Wgpu.PipelineLayoutExtras()
+					{
+						chain = new Wgpu.ChainedStruct { sType = (Wgpu.SType)Wgpu.NativeSType.STypePipelineLayoutExtras },
+						pushConstantRangeCount = (uint)pushConstantRanges.Length,
+						pushConstantRanges = pPushConstantRanges
+					});
+				}
+			}
 			return this;
 		}
 
@@ -195,16 +218,16 @@ namespace Reactor.Platform.WGPU.Helpers
 			where T : struct
 		{
 			IntPtr ptr = Util.AllocHStruct(structure);
-			
-			if(GetPointer() == IntPtr.Zero)
-                _pointer = ptr;
-            
-			if(_pointers.Count!=0)
-            {
+
+			if (GetPointer() == IntPtr.Zero)
+				_pointer = ptr;
+
+			if (_pointers.Count != 0)
+			{
 				//write this struct into the "next" field of the last struct
 				//this only works because next is guaranteed to be the first field of every ChainedStruct
 				Marshal.StructureToPtr(ptr, _pointers[_pointers.Count - 1], false);
-            }
+			}
 		}
 
 		private IntPtr TrackAllocatedData(IntPtr ptr)
@@ -213,16 +236,16 @@ namespace Reactor.Platform.WGPU.Helpers
 			return ptr;
 		}
 
-        public void Dispose()
-        {
-            foreach (var pointer in _pointers)
-	            Util.FreePtr(pointer);
-            
-            foreach (var pointer in _trackedAllocatedData)
-	            Util.FreePtr(pointer);
-            
-            _pointers.Clear();
-            _trackedAllocatedData.Clear();
-        }
-    }
+		public void Dispose()
+		{
+			foreach (var pointer in _pointers)
+				Util.FreePtr(pointer);
+
+			foreach (var pointer in _trackedAllocatedData)
+				Util.FreePtr(pointer);
+
+			_pointers.Clear();
+			_trackedAllocatedData.Clear();
+		}
+	}
 }

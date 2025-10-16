@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     [Serializable]
     [StructLayout(LayoutKind.Explicit, Size = 16, Pack = 4)]
@@ -891,10 +891,10 @@ namespace Reactor.Math3D
         }
 
         /// <summary>
-        ///     Converts a Reactor Quaternion to a System Numerics Quaternion (supposedly they are fast).
-        ///     This way you can use either Reactor or System.Numerics to do maths.
+        ///     Converts a Red Quaternion to a System Numerics Quaternion (supposedly they are fast).
+        ///     This way you can use either Red or System.Numerics to do maths.
         /// </summary>
-        /// <param name="value">Reactor Quaternion value</param>
+        /// <param name="value">Red Quaternion value</param>
         /// <returns>System Numerics Quaternion value</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator System.Numerics.Quaternion(Quaternion value)
@@ -903,10 +903,10 @@ namespace Reactor.Math3D
         }
 
         /// <summary>
-        ///     Converts a System Numerics Quaternion to a Reactor Quaternion (supposedly they are just as fast).
-        ///     This way you can use either Reactor or System.Numerics to do maths.
+        ///     Converts a System Numerics Quaternion to a Red Quaternion (supposedly they are just as fast).
+        ///     This way you can use either Red or System.Numerics to do maths.
         /// </summary>
-        /// <param name="value">Reactor Quaternion value</param>
+        /// <param name="value">Red Quaternion value</param>
         /// <returns>System Numerics Quaternion value</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Quaternion(System.Numerics.Quaternion value)

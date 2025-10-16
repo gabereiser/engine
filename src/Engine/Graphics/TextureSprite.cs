@@ -1,7 +1,7 @@
-﻿using Reactor.Math3D;
-using Reactor.Types;
+﻿using Red.Math3D;
+using Red.Types;
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public class TextureSprite : Texture2D
     {

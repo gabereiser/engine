@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using static Reactor.Platform.WGPU.Wgpu;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public class Texture : IDisposable
     {
@@ -28,7 +28,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
         internal Texture(TextureImpl impl, TextureDescriptor descriptor)
         {
-            if(impl.Handle == IntPtr.Zero)
+            if (impl.Handle == IntPtr.Zero)
                 throw new ResourceCreationError(nameof(Texture));
 
             Impl = impl;
@@ -74,7 +74,7 @@ namespace Reactor.Platform.WGPU.Wrappers
         {
             if (view.Texture != this)
                 throw new TextureDoesNotOwnViewException(Label);
-                    
+
             createdViews.Remove(view.Impl);
         }
 
@@ -86,9 +86,9 @@ namespace Reactor.Platform.WGPU.Wrappers
                 TextureView.Forget(impl);
                 TextureViewRelease(impl);
             }
-            
+
             createdViews.Clear();
-            
+
             TextureDestroy(Impl);
             TextureRelease(Impl);
             Impl = default;
@@ -100,7 +100,7 @@ namespace Reactor.Platform.WGPU.Wrappers
         public static TextureView CreateTextureView(this Texture texture)
         {
             TextureViewDimension dimension;
-            switch(texture.Dimension)
+            switch (texture.Dimension)
             {
                 case TextureDimension.OneDimension:
                     dimension = TextureViewDimension.OneDimension;

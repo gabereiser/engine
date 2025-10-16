@@ -24,12 +24,12 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Reactor.Geometry;
-using Reactor.Platform;
-using Buffer = Reactor.Platform.WGPU.Wrappers.Buffer;
+using Red.Geometry;
+using Red.Platform;
+using Buffer = Red.Platform.WGPU.Wrappers.Buffer;
 
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public class VertexBuffer : IDisposable
     {
@@ -70,17 +70,18 @@ namespace Reactor.Graphics
         public BufferUsage BufferUsage { get; }
 
         public unsafe Buffer* VBO { get; private set; }
-        
+
 
         public void Dispose()
         {
-            if (!IsDisposed){
+            if (!IsDisposed)
+            {
                 //GPU.DeleteBuffer(VBO);
                 GPU.CheckError();
             }
             IsDisposed = true;
         }
-        
+
         public void GetData<T>(int offsetInBytes, T[] data, int startIndex, int elementCount, int vertexStride)
             where T : struct
         {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public class HandleDroppedOrDestroyedException : Exception
     {
@@ -27,7 +27,7 @@ namespace Reactor.Platform.WGPU.Wrappers
         public TextureDoesNotOwnViewException(string textureName)
             : base($"The texture {textureName} does not own the texture view")
         {
-            
+
         }
     }
 }

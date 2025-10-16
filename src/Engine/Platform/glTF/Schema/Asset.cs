@@ -8,149 +8,175 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reactor.Platform.glTF.Schema {
+namespace Red.Platform.glTF.Schema
+{
     using System.Linq;
     using System.Runtime.Serialization;
-    
-    
-    public class Asset {
-        
+
+
+    public class Asset
+    {
+
         /// <summary>
         /// Backing field for Copyright.
         /// </summary>
         private string m_copyright;
-        
+
         /// <summary>
         /// Backing field for Generator.
         /// </summary>
         private string m_generator;
-        
+
         /// <summary>
         /// Backing field for Version.
         /// </summary>
         private string m_version;
-        
+
         /// <summary>
         /// Backing field for MinVersion.
         /// </summary>
         private string m_minVersion;
-        
+
         /// <summary>
         /// Backing field for Extensions.
         /// </summary>
         private System.Collections.Generic.Dictionary<string, object> m_extensions;
-        
+
         /// <summary>
         /// Backing field for Extras.
         /// </summary>
         private Extras m_extras;
-        
+
         /// <summary>
         /// A copyright message suitable for display to credit the content creator.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("copyright")]
-        public string Copyright {
-            get {
+        public string Copyright
+        {
+            get
+            {
                 return this.m_copyright;
             }
-            set {
+            set
+            {
                 this.m_copyright = value;
             }
         }
-        
+
         /// <summary>
         /// Tool that generated this glTF model.  Useful for debugging.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("generator")]
-        public string Generator {
-            get {
+        public string Generator
+        {
+            get
+            {
                 return this.m_generator;
             }
-            set {
+            set
+            {
                 this.m_generator = value;
             }
         }
-        
+
         /// <summary>
         /// The glTF version in the form of `<major>.<minor>` that this asset targets.
         /// </summary>
         [Newtonsoft.Json.JsonRequiredAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("version")]
-        public string Version {
-            get {
+        public string Version
+        {
+            get
+            {
                 return this.m_version;
             }
-            set {
+            set
+            {
                 this.m_version = value;
             }
         }
-        
+
         /// <summary>
         /// The minimum glTF version in the form of `<major>.<minor>` that this asset targets. This property **MUST NOT** be greater than the asset version.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("minVersion")]
-        public string MinVersion {
-            get {
+        public string MinVersion
+        {
+            get
+            {
                 return this.m_minVersion;
             }
-            set {
+            set
+            {
                 this.m_minVersion = value;
             }
         }
-        
+
         /// <summary>
         /// JSON object with extension-specific objects.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("extensions")]
-        public System.Collections.Generic.Dictionary<string, object> Extensions {
-            get {
+        public System.Collections.Generic.Dictionary<string, object> Extensions
+        {
+            get
+            {
                 return this.m_extensions;
             }
-            set {
+            set
+            {
                 this.m_extensions = value;
             }
         }
-        
+
         /// <summary>
         /// Application-specific data.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("extras")]
-        public Extras Extras {
-            get {
+        public Extras Extras
+        {
+            get
+            {
                 return this.m_extras;
             }
-            set {
+            set
+            {
                 this.m_extras = value;
             }
         }
-        
-        public bool ShouldSerializeCopyright() {
-            return ((m_copyright == null) 
+
+        public bool ShouldSerializeCopyright()
+        {
+            return ((m_copyright == null)
                         == false);
         }
-        
-        public bool ShouldSerializeGenerator() {
-            return ((m_generator == null) 
+
+        public bool ShouldSerializeGenerator()
+        {
+            return ((m_generator == null)
                         == false);
         }
-        
-        public bool ShouldSerializeVersion() {
-            return ((m_version == null) 
+
+        public bool ShouldSerializeVersion()
+        {
+            return ((m_version == null)
                         == false);
         }
-        
-        public bool ShouldSerializeMinVersion() {
-            return ((m_minVersion == null) 
+
+        public bool ShouldSerializeMinVersion()
+        {
+            return ((m_minVersion == null)
                         == false);
         }
-        
-        public bool ShouldSerializeExtensions() {
-            return ((m_extensions == null) 
+
+        public bool ShouldSerializeExtensions()
+        {
+            return ((m_extensions == null)
                         == false);
         }
-        
-        public bool ShouldSerializeExtras() {
-            return ((m_extras == null) 
+
+        public bool ShouldSerializeExtras()
+        {
+            return ((m_extras == null)
                         == false);
         }
     }

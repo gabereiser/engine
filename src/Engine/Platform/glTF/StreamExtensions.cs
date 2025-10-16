@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Reactor.Platform.glTF
+namespace Red.Platform.glTF
 {
     internal static class StreamExtensions
     {

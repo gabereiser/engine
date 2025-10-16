@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Zio.FileSystems;
 
 namespace BindingsGenerator
@@ -17,17 +18,15 @@ namespace BindingsGenerator
 
 			try
 			{
-				AcceptHeaderDirectory(new[] { "headers", "headers/webgpu-headers" }, "Wgpu", "Reactor.Platform.WGPU");
+				AcceptHeaderDirectory(new[] { "headers", "headers/webgpu-headers" }, "Wgpu", "Red.Platform.WGPU");
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Failed to generate bindings:");
 				Console.WriteLine(e);
-				Console.ReadKey();
 			}
 
-			Console.WriteLine("Done. Press any key to exit");
-			Console.ReadKey();
+			Console.WriteLine("Done.");
 		}
 
 		public static void AcceptHeaderDirectory(IEnumerable<string> headerDirectories, string outputClass, string outputNamespace)
@@ -45,7 +44,10 @@ namespace BindingsGenerator
 				GenerateEnumItemAsFields = false,
 				TypedefCodeGenKind = CppTypedefCodeGenKind.NoWrap,
 				DefaultDllImportNameAndArguments = "\"wgpu_native\"",
-
+				DefaultMarshalForBool = new CSharpMarshalAsAttribute(UnmanagedType.U1),
+				DefaultMarshalForString = new CSharpMarshalAsAttribute(UnmanagedType.LPUTF8Str),
+				UseLibraryImport = true,
+				DefaultCharSet = CharSet.Ansi,
 				MappingRules =
 				{
 					r => r.MapAll<CppEnumItem>().CSharpAction((converter, element) =>
@@ -98,8 +100,16 @@ namespace BindingsGenerator
 
 						if (method.Name.StartsWith("wgpu"))
 						{
-							(method.Attributes[0] as CSharpDllImportAttribute).EntryPoint = $"\"{method.Name}\""; ;
+							try
+							{
+								(method.Attributes[0]! as CSharpLibraryImportAttribute)!.EntryPoint = $"\"{method.Name}\"";
+							}
+							catch
+							{
+								(method.Attributes[0]! as CSharpDllImportAttribute)!.EntryPoint = $"\"{method.Name}\"";
+							}
 							method.Name = method.Name[4..];
+
 						}
 					})
 				}
@@ -115,10 +125,9 @@ namespace BindingsGenerator
 				Console.WriteLine("Failed to generate bindings due to:");
 
 				foreach (CppDiagnosticMessage message in compilation.Diagnostics.Messages)
-					if (message.Type == CppLogMessageType.Error)
-						Console.WriteLine(message);
+					Console.WriteLine(message);
 
-				Console.ReadKey();
+				//Console.ReadKey();
 				return;
 			}
 

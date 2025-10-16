@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 
-namespace Reactor.Types
+namespace Red.Types
 {
     public class Package : IDisposable
     {
@@ -98,6 +98,6 @@ namespace Reactor.Types
             foreach (var entry in file.Entries) names.Add(entry.FullName);
             return names;
         }
-        
+
     }
 }

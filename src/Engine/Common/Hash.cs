@@ -25,7 +25,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace Reactor.Common
+namespace Red.Common
 {
     internal static class Hash
     {

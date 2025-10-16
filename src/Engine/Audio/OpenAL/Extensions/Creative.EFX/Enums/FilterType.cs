@@ -7,7 +7,7 @@
 // of the MIT license. See the LICENSE file for details.
 //
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     /// <summary>
     ///     Filter type definitions to be used with EfxFilteri.FilterType.

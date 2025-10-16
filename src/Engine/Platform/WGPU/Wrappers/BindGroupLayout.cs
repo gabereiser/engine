@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Reactor.Platform.WGPU.Helpers;
-using static Reactor.Platform.WGPU.Wgpu;
+using Red.Platform.WGPU.Helpers;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public class BindGroupLayout : IDisposable
     {
@@ -12,7 +12,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
         private BindGroupLayoutImpl _impl;
 
-        internal BindGroupLayoutImpl Impl 
+        internal BindGroupLayoutImpl Impl
         {
             get
             {
@@ -35,7 +35,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
         internal static BindGroupLayout For(BindGroupLayoutImpl impl)
             => impl.Handle == IntPtr.Zero ? null : instances.GetOrCreate(impl, () => new BindGroupLayout(impl));
-        
+
         public void Dispose()
         {
             BindGroupLayoutRelease(Impl);

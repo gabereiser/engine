@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using System.Numerics;
-using Reactor.Graphics;
-using Reactor.Types;
+using Red.Graphics;
+using Red.Types;
 
-namespace Reactor
+namespace Red
 {
     public class Screen
     {
@@ -11,6 +11,6 @@ namespace Reactor
         {
             return new Vector2(72f, 72f);
         }
-        public static void RenderTexture(Texture texture, Rectangle bounds, RColor color, Matrix4x4 model){}
+        public static void RenderTexture(Texture texture, Rectangle bounds, RColor color, Matrix4x4 model) { }
     }
 }

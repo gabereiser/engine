@@ -31,12 +31,12 @@
 
 using System.IO;
 
-namespace Reactor.Fonts.BMFont
+namespace Red.Fonts.BMFont
 {
-  /// <summary>
-  ///     Represents a texture page.
-  /// </summary>
-  public struct Page
+    /// <summary>
+    ///     Represents a texture page.
+    /// </summary>
+    public struct Page
     {
         #region Private Fields
 

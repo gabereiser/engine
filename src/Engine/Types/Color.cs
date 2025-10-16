@@ -24,12 +24,12 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Reactor.Graphics;
-using Reactor.Math3D;
-using Reactor.Common;
+using Red.Graphics;
+using Red.Math3D;
+using Red.Common;
 
 
-namespace Reactor.Types
+namespace Red.Types
 {
     /// <summary>
     ///     Describes a 32-bit packed RColor.
@@ -242,7 +242,7 @@ namespace Reactor.Types
         public RColor(Vector4 RColor)
         {
             PackedValue = 0;
-            
+
             R = (byte)MathHelper.Clamp(RColor.X * 255, byte.MinValue, byte.MaxValue);
             G = (byte)MathHelper.Clamp(RColor.Y * 255, byte.MinValue, byte.MaxValue);
             B = (byte)MathHelper.Clamp(RColor.Z * 255, byte.MinValue, byte.MaxValue);
@@ -1326,7 +1326,7 @@ namespace Reactor.Types
             byte[] values = BitConverter.GetBytes(rgb);
             return new RColor(values[2], values[1], values[0], 255);
         }
-        
+
         #region IEquatable<RColor> Members
 
         /// <summary>

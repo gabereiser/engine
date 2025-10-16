@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Reactor.Entities;
+using Red.Entities;
 
-namespace Reactor
+namespace Red
 {
     public static class Scene
     {
@@ -20,6 +20,6 @@ namespace Reactor
             Root.Dispose();
             Root = new SceneNode();
         }
-        
+
     }
 }

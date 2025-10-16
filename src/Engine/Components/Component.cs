@@ -1,11 +1,11 @@
-﻿using Reactor.Entities;
+﻿using Red.Entities;
 
-namespace Reactor.Components
+namespace Red.Components
 {
     public abstract class Component : IComponent
     {
         public Entity entity;
-        
+
         public virtual void Init()
         {
         }

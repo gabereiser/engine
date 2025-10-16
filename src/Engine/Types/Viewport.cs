@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Reactor.Types
+namespace Red.Types
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Viewport

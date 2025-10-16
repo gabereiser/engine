@@ -9,9 +9,9 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Reactor.Math3D;
+using Red.Math3D;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     public partial class ALC
     {

@@ -34,13 +34,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
-namespace Reactor.Fonts.BMFont
+namespace Red.Fonts.BMFont
 {
-  /// <summary>
-  ///     A bitmap font.
-  /// </summary>
-  /// <seealso cref="T:System.Collections.Generic.IEnumerable{Cyotek.Drawing.BitmapFont.Character}" />
-  public class BitmapFont : IEnumerable<Character>
+    /// <summary>
+    ///     A bitmap font.
+    /// </summary>
+    /// <seealso cref="T:System.Collections.Generic.IEnumerable{Cyotek.Drawing.BitmapFont.Character}" />
+    public class BitmapFont : IEnumerable<Character>
     {
         #region Public Fields
 

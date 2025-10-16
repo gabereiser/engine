@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Reactor.Geometry;
-using Reactor.Graphics;
-using Reactor.Platform;
-using Reactor.Types;
+using Red.Geometry;
+using Red.Graphics;
+using Red.Platform;
+using Red.Types;
 using SharpFont;
-using Reactor.Math3D;
+using Red.Math3D;
 using Rectangle = System.Drawing.Rectangle;
 
-namespace Reactor.Fonts
+namespace Red.Fonts
 {
     public class TrueTypeFont : Font
     {
@@ -116,17 +116,17 @@ namespace Reactor.Fonts
             Glyphs.Sort(new FontGlyphSizeSorter());
             var missed = -1;
             var width = 16;
-            Bitmap b = new Bitmap (1, 1);
+            Bitmap b = new Bitmap(1, 1);
             while (missed != 0)
             {
                 missed = 0;
                 AtlasNode root = new AtlasNode();
                 root.bounds = new Rectangle(0, 0, width, width);
-                b.Dispose ();
+                b.Dispose();
                 b = new Bitmap(width, width);
-                
+
                 b.Clear(RColor.Transparent);
-                
+
                 for (var i = 0; i < Glyphs.Count; i++)
                 {
                     TrueTypeFontGlyph glyph = Glyphs[i];
@@ -161,12 +161,12 @@ namespace Reactor.Fonts
 
         }
         internal void Render(ref Program program,
-	        ref VertexBuffer vertexBuffer,
-	        ref IndexBuffer indexBuffer,
-	        string text,
-	        Vector2 location,
-	        RColor color,
-	        Matrix matrix)
+            ref VertexBuffer vertexBuffer,
+            ref IndexBuffer indexBuffer,
+            string text,
+            Vector2 location,
+            RColor color,
+            Matrix matrix)
         {
             Vector2 pen = location;
             pen.Y += MeasureString(text).Height;
@@ -174,11 +174,11 @@ namespace Reactor.Fonts
             List<VertexData2D> quads = new List<VertexData2D>();
             foreach (char c in text)
             {
-                if(c == '\r')
+                if (c == '\r')
                 {
                     continue;
                 }
-                if(c == '\n')
+                if (c == '\n')
                 {
                     pen.X = x;
                     pen.Y += LineHeight;
@@ -253,11 +253,11 @@ namespace Reactor.Fonts
             quadVerts[0].Position = new Vector2(placement.X, placement.Y);
             quadVerts[0].TexCoord = new Vector2(UVs.X, UVs.Y);
             quadVerts[1].Position = new Vector2(placement.X + placement.Width, placement.Y);
-            quadVerts[1].TexCoord = new Vector2(UVs.X+UVs.Z, UVs.Y);
+            quadVerts[1].TexCoord = new Vector2(UVs.X + UVs.Z, UVs.Y);
             quadVerts[2].Position = new Vector2(placement.X + placement.Width, placement.Y + placement.Height);
-            quadVerts[2].TexCoord = new Vector2(UVs.X+UVs.Z, UVs.Y+UVs.W);
+            quadVerts[2].TexCoord = new Vector2(UVs.X + UVs.Z, UVs.Y + UVs.W);
             quadVerts[3].Position = new Vector2(placement.X, placement.Y + placement.Height);
-            quadVerts[3].TexCoord = new Vector2(UVs.X, UVs.Y+UVs.W);
+            quadVerts[3].TexCoord = new Vector2(UVs.X, UVs.Y + UVs.W);
             //vertexBuffer.SetData<RVertexData2D>(quadVerts);
             return quadVerts;
         }
@@ -280,7 +280,7 @@ namespace Reactor.Fonts
 
         }
 
-        internal static Face SystemFont = GetResource("Reactor.Resources.coders_crux.ttf");
+        internal static Face SystemFont = GetResource("Red.Resources.coders_crux.ttf");
         /*public static Bitmap ToGdipBitmap(this FTBitmap ftBitmap, Color color)
         {
             if (ftBitmap.IsDisposed)
@@ -384,18 +384,18 @@ namespace Reactor.Fonts
 			}
             
         }*/
-        
+
         static unsafe void Copy(IntPtr source, int sourceOffset, IntPtr destination, int destinationOffset, int count)
         {
-	        byte* src = (byte*)source + sourceOffset;
-	        byte* dst = (byte*)destination + destinationOffset;
-	        byte* end = dst + count;
+            byte* src = (byte*)source + sourceOffset;
+            byte* dst = (byte*)destination + destinationOffset;
+            byte* end = dst + count;
 
-	        while (dst != end)
-		        *dst++ = *src++;
+            while (dst != end)
+                *dst++ = *src++;
         }
     }
-    
+
 
     internal class FontGlyphSizeSorter : IComparer<TrueTypeFontGlyph>
     {

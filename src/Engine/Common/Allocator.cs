@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace Reactor.Common
+namespace Red.Common
 {
     /// <summary>
     ///     Allocator has some pre-defined type arrays useful for Interop with underlying platform memory.
@@ -14,7 +14,7 @@ namespace Reactor.Common
     {
         private static int _allocations;
         private static List<Memory<byte>> _fences = new List<Memory<byte>>();
-        
+
         public static int Allocations
         {
             get
@@ -28,7 +28,7 @@ namespace Reactor.Common
             get
             {
                 ulong l = 0UL;
-                
+
                 foreach (var f in _fences)
                 {
                     l += (ulong)f.Length;
@@ -36,7 +36,7 @@ namespace Reactor.Common
                 return l;
             }
         }
-        
+
         public static Memory<byte> Fence(int index)
         {
             return _fences[index];
@@ -70,13 +70,13 @@ namespace Reactor.Common
         {
             Interlocked.Decrement(ref _allocations);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void* Malloc(ulong size)
         {
             return Malloc((long)size);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void* Malloc(long size)
         {
@@ -86,7 +86,7 @@ namespace Reactor.Common
 
             return ptr.ToPointer();
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void Free(void* a)
         {

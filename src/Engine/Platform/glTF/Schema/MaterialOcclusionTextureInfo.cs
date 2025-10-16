@@ -8,133 +8,158 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reactor.Platform.glTF.Schema {
+namespace Red.Platform.glTF.Schema
+{
     using System.Linq;
     using System.Runtime.Serialization;
-    
-    
-    public class MaterialOcclusionTextureInfo {
-        
+
+
+    public class MaterialOcclusionTextureInfo
+    {
+
         /// <summary>
         /// Backing field for Index.
         /// </summary>
         private int m_index;
-        
+
         /// <summary>
         /// Backing field for TexCoord.
         /// </summary>
         private int m_texCoord = 0;
-        
+
         /// <summary>
         /// Backing field for Strength.
         /// </summary>
         private float m_strength = 1F;
-        
+
         /// <summary>
         /// Backing field for Extensions.
         /// </summary>
         private System.Collections.Generic.Dictionary<string, object> m_extensions;
-        
+
         /// <summary>
         /// Backing field for Extras.
         /// </summary>
         private Extras m_extras;
-        
+
         /// <summary>
         /// The index of the texture.
         /// </summary>
         [Newtonsoft.Json.JsonRequiredAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("index")]
-        public int Index {
-            get {
+        public int Index
+        {
+            get
+            {
                 return this.m_index;
             }
-            set {
-                if ((value < 0)) {
+            set
+            {
+                if ((value < 0))
+                {
                     throw new System.ArgumentOutOfRangeException("Index", value, "Expected value to be greater than or equal to 0");
                 }
                 this.m_index = value;
             }
         }
-        
+
         /// <summary>
         /// The set index of texture's TEXCOORD attribute used for texture coordinate mapping.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("texCoord")]
-        public int TexCoord {
-            get {
+        public int TexCoord
+        {
+            get
+            {
                 return this.m_texCoord;
             }
-            set {
-                if ((value < 0)) {
+            set
+            {
+                if ((value < 0))
+                {
                     throw new System.ArgumentOutOfRangeException("TexCoord", value, "Expected value to be greater than or equal to 0");
                 }
                 this.m_texCoord = value;
             }
         }
-        
+
         /// <summary>
         /// A scalar multiplier controlling the amount of occlusion applied.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("strength")]
-        public float Strength {
-            get {
+        public float Strength
+        {
+            get
+            {
                 return this.m_strength;
             }
-            set {
-                if ((value < 0D)) {
+            set
+            {
+                if ((value < 0D))
+                {
                     throw new System.ArgumentOutOfRangeException("Strength", value, "Expected value to be greater than or equal to 0");
                 }
-                if ((value > 1D)) {
+                if ((value > 1D))
+                {
                     throw new System.ArgumentOutOfRangeException("Strength", value, "Expected value to be less than or equal to 1");
                 }
                 this.m_strength = value;
             }
         }
-        
+
         /// <summary>
         /// JSON object with extension-specific objects.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("extensions")]
-        public System.Collections.Generic.Dictionary<string, object> Extensions {
-            get {
+        public System.Collections.Generic.Dictionary<string, object> Extensions
+        {
+            get
+            {
                 return this.m_extensions;
             }
-            set {
+            set
+            {
                 this.m_extensions = value;
             }
         }
-        
+
         /// <summary>
         /// Application-specific data.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("extras")]
-        public Extras Extras {
-            get {
+        public Extras Extras
+        {
+            get
+            {
                 return this.m_extras;
             }
-            set {
+            set
+            {
                 this.m_extras = value;
             }
         }
-        
-        public bool ShouldSerializeTexCoord() {
-            return ((m_texCoord == 0) 
+
+        public bool ShouldSerializeTexCoord()
+        {
+            return ((m_texCoord == 0)
                         == false);
         }
-        
-        public bool ShouldSerializeStrength() {
-            return ((m_strength == 1F) 
+
+        public bool ShouldSerializeStrength()
+        {
+            return ((m_strength == 1F)
                         == false);
         }
-        
-        public bool ShouldSerializeExtensions() {
-            return ((m_extensions == null) 
+
+        public bool ShouldSerializeExtensions()
+        {
+            return ((m_extensions == null)
                         == false);
         }
-        
-        public bool ShouldSerializeExtras() {
-            return ((m_extras == null) 
+
+        public bool ShouldSerializeExtras()
+        {
+            return ((m_extras == null)
                         == false);
         }
     }

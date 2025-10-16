@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static Reactor.Platform.WGPU.Wgpu;
+using Red.Platform.WGPU.Helpers;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public class Buffer : IDisposable
     {
         private BufferImpl _impl;
 
-        internal BufferImpl Impl 
+        internal BufferImpl Impl
         {
             get
             {
@@ -38,7 +40,7 @@ namespace Reactor.Platform.WGPU.Wrappers
         {
             var structSize = (ulong)Marshal.SizeOf<T>();
 
-            void* ptr = (void*)BufferGetConstMappedRange(Impl, 
+            void* ptr = BufferGetConstMappedRange(Impl,
                 offset * structSize, (ulong)size * structSize);
 
             return new Span<T>(ptr, size);
@@ -49,14 +51,50 @@ namespace Reactor.Platform.WGPU.Wrappers
         {
             var structSize = (ulong)Marshal.SizeOf<T>();
 
-            void* ptr = (void*)BufferGetMappedRange(Impl,
+            void* ptr = BufferGetMappedRange(Impl,
                 offset * structSize, (ulong)size * structSize);
 
             return new Span<T>(ptr, size);
         }
 
         public void MapAsync(MapMode mode, ulong offset, ulong size, BufferMapCallback callback)
-            => BufferMapAsync(Impl, (uint)mode, offset, size, (s,_) => callback(s), IntPtr.Zero);
+        {
+            GCHandle handle = default;
+            var context = new Callback<BufferMapAsyncStatus>
+            {
+                Delegate = (s, m, _) => callback.Invoke(s)
+            };
+            handle = GCHandle.Alloc(context);
+            try
+            {
+                unsafe
+                {
+                    BufferMapAsync(Impl, (uint)mode, offset, size, &BufferMapCallback, (void*)GCHandle.ToIntPtr(handle));
+                }
+            }
+            finally
+            {
+                if (handle.IsAllocated) handle.Free();
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        internal static unsafe void BufferMapCallback(BufferMapAsyncStatus status, void* userData)
+        {
+            GCHandle handle = GCHandle.FromIntPtr((IntPtr)userData);
+            try
+            {
+                var context = (Callback<BufferMapAsyncStatus>)handle.Target;
+                context.Delegate?.Invoke(status, "", context.UserData);
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
+            }
+        }
 
         public void Unmap() => BufferUnmap(Impl);
 

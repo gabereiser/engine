@@ -1,7 +1,7 @@
 ﻿
 using System.Drawing;
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public interface IGraphicsContext
     {

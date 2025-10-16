@@ -10,7 +10,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Audio.OpenAL.Native
+namespace Red.Audio.OpenAL.Native
 {
     internal class ConstCharPtrMarshaler : ICustomMarshaler
     {

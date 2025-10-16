@@ -47,9 +47,9 @@
 //
 
 using System;
-using Reactor.Audio.OpenAL;
+using Red.Audio.OpenAL;
 
-namespace Reactor.Audio
+namespace Red.Audio
 {
     internal static class ALHelper
     {

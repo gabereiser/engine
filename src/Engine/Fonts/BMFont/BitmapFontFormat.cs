@@ -29,7 +29,7 @@
  * Licensed under the MIT License. See license.txt for the full text.
  */
 
-namespace Reactor.Fonts.BMFont
+namespace Red.Fonts.BMFont
 {
     internal enum BitmapFontFormat
     {

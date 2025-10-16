@@ -24,11 +24,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Reactor.Common;
-using Reactor.Graphics;
-using Reactor.Platform;
+using Red.Common;
+using Red.Graphics;
+using Red.Platform;
 
-namespace Reactor.Geometry
+namespace Red.Geometry
 {
     public class VertexDeclaration
     {
@@ -181,9 +181,9 @@ namespace Reactor.Geometry
             }
         }
 
-        
+
     }
-    
+
     internal enum VertexAttribPointerType
     {
         Byte = 5120, // 0x00001400

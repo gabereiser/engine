@@ -23,7 +23,7 @@
 
 using System;
 
-namespace Reactor.Geometry
+namespace Red.Geometry
 {
     internal class VertexDeclarationCache<T>
         where T : IVertexType

@@ -49,10 +49,10 @@
 using System;
 using System.IO;
 using NVorbis;
-using Reactor.Audio.OpenAL;
-using Reactor.Common;
+using Red.Audio.OpenAL;
+using Red.Common;
 
-namespace Reactor.Audio
+namespace Red.Audio
 {
     public class RAudioStream
     {

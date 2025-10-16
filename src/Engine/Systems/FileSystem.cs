@@ -4,11 +4,11 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Reactor.Common;
-using Reactor.Types;
+using Red.Common;
+using Red.Types;
 
 
-namespace Reactor.Systems
+namespace Red.Systems
 {
     public class FileSystem : Singleton<FileSystem>, IDisposable
     {
@@ -18,7 +18,7 @@ namespace Reactor.Systems
         {
             packages.Clear();
         }
-        
+
         public string AssemblyDirectory
         {
             get
@@ -53,14 +53,14 @@ namespace Reactor.Systems
 
             return null;
         }
-        
+
         public byte[] GetFileBytes(string relativeFilename)
         {
             var absolutePath = GetFilePath(relativeFilename);
             if (File.Exists(absolutePath))
                 using (var s = File.Open(absolutePath, FileMode.Open))
-                    using (var reader = new BinaryReader(s))
-                        return reader.ReadBytes((int)s.Length);
+                using (var reader = new BinaryReader(s))
+                    return reader.ReadBytes((int)s.Length);
             return null;
         }
 
@@ -113,7 +113,7 @@ namespace Reactor.Systems
                 Serialization.WriteStruct(stream, data);
                 return stream;
             }).Result;
-            
+
         }
 
         internal T Load<T>(MemoryStream stream)

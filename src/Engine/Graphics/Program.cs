@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Reactor.Geometry;
-using Reactor.Math3D;
-using Reactor.Platform;
-using Reactor.Platform.WGPU;
-using Reactor.Platform.WGPU.Wrappers;
-using Reactor.Shading;
-using Reactor.Types;
+using Red.Geometry;
+using Red.Math3D;
+using Red.Platform;
+using Red.Platform.WGPU;
+using Red.Platform.WGPU.Wrappers;
+using Red.Shading;
+using Red.Types;
 
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public class Program : IDisposable
     {
@@ -27,13 +27,13 @@ namespace Reactor.Graphics
 
         private readonly Dictionary<ShaderSemanticDefinition, ShaderSemantic> _semantics =
             new Dictionary<ShaderSemanticDefinition, ShaderSemantic>();
-        
+
         public uint Id { get; internal set; }
         internal ShaderModule shader;
-        
+
         public Shader Vertex { get; internal set; }
         public Shader Fragment { get; internal set; }
-        
+
         public void Dispose()
         {
             if (shader != null)
@@ -56,42 +56,42 @@ namespace Reactor.Graphics
         {
             Vertex = new Shader(vertSource, (int)ShaderEffectType.VERTEX);
             Fragment = new Shader(fragSource, (int)ShaderEffectType.FRAGMENT);
-            
+
         }
 
         public void SetUniformValue(string name, bool value)
         {
-            
+
         }
 
         public void SetUniformValue(string name, int value)
         {
-            
+
         }
 
         public void SetUniformValue(string name, double value)
         {
-            
+
         }
 
         public void SetUniformValue(string name, float value)
         {
-            
+
         }
 
         public void SetUniformValue(string name, Vector2 value)
         {
-            
+
         }
 
         public void SetUniformValue(string name, Vector3 value)
         {
-            
+
         }
 
         public void SetUniformValue(string name, Vector4 value)
         {
-            
+
         }
 
         public void SetUniformValue(string name, RColor value)
@@ -101,12 +101,12 @@ namespace Reactor.Graphics
 
         public void SetUniformValue(string name, Matrix value)
         {
-            
+
         }
 
         public void SetSamplerValue(TextureLayer layer, Texture texture)
         {
-            
+
         }
 
         public int GetUniformBySemantic(ShaderSemanticDefinition semantic)
@@ -309,9 +309,9 @@ namespace Reactor.Graphics
 
         internal static void InitShaders()
         {
-            
+
         }
-        
+
     }
-    
+
 }

@@ -51,9 +51,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Reactor.Audio.OpenAL;
+using Red.Audio.OpenAL;
 
-namespace Reactor.Audio
+namespace Red.Audio
 {
     public class RAudioStreamer
     {

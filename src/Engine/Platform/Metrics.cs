@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Reactor.Common;
-using Reactor.Common.Collections;
+using Red.Common;
+using Red.Common.Collections;
 
-namespace Reactor.Platform
+namespace Red.Platform
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Metric
@@ -55,7 +55,7 @@ namespace Reactor.Platform
                     return (ulong)p.VirtualMemorySize64;
                 }
             }
-        } 
+        }
         public static ulong TotalMemoryAllocated
         {
             get
@@ -67,7 +67,7 @@ namespace Reactor.Platform
                 }
             }
         }
-        
+
         public static void CreateMetric(string label)
         {
             _history[label] = new RingList<Metric>(3600);
@@ -76,10 +76,10 @@ namespace Reactor.Platform
         {
             var now = DateTime.Now;
             var metric = new Metric(now, label, value);
-            
+
             if (!_history.ContainsKey(label))
                 CreateMetric(label);
-            
+
             _history[label].Add(metric);
         }
     }

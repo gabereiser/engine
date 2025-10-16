@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Platform.Windows
+namespace Red.Platform.Windows
 {
     public enum DWM_USE_IMMERSIVE_DARK_MODE
     {
@@ -25,7 +25,7 @@ namespace Reactor.Platform.Windows
         DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
         DWMWA_WINDOW_CORNER_PREFERENCE = 33
     }
-    
+
     public class Win32
     {
         [DllImport("dwmapi.dll", CharSet = CharSet.Unicode, PreserveSig = false)]

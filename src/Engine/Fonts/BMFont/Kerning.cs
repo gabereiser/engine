@@ -31,12 +31,12 @@
 
 using System;
 
-namespace Reactor.Fonts.BMFont
+namespace Red.Fonts.BMFont
 {
-  /// <summary>
-  ///     Represents the font kerning between two characters.
-  /// </summary>
-  public struct Kerning : IEquatable<Kerning>
+    /// <summary>
+    ///     Represents the font kerning between two characters.
+    /// </summary>
+    public struct Kerning : IEquatable<Kerning>
     {
         #region Private Fields
 

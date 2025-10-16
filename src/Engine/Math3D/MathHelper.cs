@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     /// <summary>
     ///     Contains commonly used precalculated values and mathematical operations.
@@ -341,7 +341,7 @@ namespace Reactor.Math3D
                      (value1.Y - value2.Y) * (value1.Y - value2.Y) +
                      (value1.Z - value2.Z) * (value1.Z - value2.Z);
         }
-        
+
         public static float[] ToFloatArray(this Matrix mat)
         {
             float[] matarray =
@@ -415,7 +415,7 @@ namespace Reactor.Math3D
         public static int GetLongestAxis(this BoundingBox box)
         {
             Vector3 size = box.Max - box.Min;
-    
+
             // Compare the differences in each dimension (X, Y, Z)
             if (size.X >= size.Y && size.X >= size.Z)
             {

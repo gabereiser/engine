@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using Reactor.Common;
-using Reactor.Fonts;
-using Reactor.Graphics;
+using Red.Common;
+using Red.Fonts;
+using Red.Graphics;
 
 
-namespace Reactor.Types
+namespace Red.Types
 {
     public enum RedDataType
     {
@@ -33,7 +33,7 @@ namespace Reactor.Types
         public int WrapT;
         public byte[] Data;
     }
-    
+
     public struct RedFile
     {
         public char[] Magic;
@@ -42,7 +42,7 @@ namespace Reactor.Types
         public int DataType;
         public int DataLength;
         public byte[] Data;
-        
+
         Texture readTexture(Stream s)
         {
             var textureHeader = Serialization.ReadStruct<TextureHeader>(s);
@@ -108,8 +108,8 @@ namespace Reactor.Types
                 var pz = textures[4];
                 var nz = textures[5];
                 cube.Create(textures[0].PixelFormat, ref px, ref py, ref pz, ref nx, ref ny, ref nz);
-                
-                
+
+
             }
             throw new AccessViolationException("RedFile is not a TextureCube");
         }

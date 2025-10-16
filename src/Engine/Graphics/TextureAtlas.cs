@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Reactor.Common;
-using Reactor.Platform;
+using Red.Common;
+using Red.Platform;
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public class TextureAtlas : Texture2D
     {

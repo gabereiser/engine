@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Red.Platform.WGPU.Helpers;
+using static Red.Platform.WGPU.Wgpu;
 
-using static Reactor.Platform.WGPU.Wgpu;
-
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public class ComputePipeline : IDisposable
     {
         private ComputePipelineImpl _impl;
 
-        internal ComputePipelineImpl Impl 
+        internal ComputePipelineImpl Impl
         {
             get
             {
@@ -33,7 +36,7 @@ namespace Reactor.Platform.WGPU.Wrappers
             => BindGroupLayout.For(ComputePipelineGetBindGroupLayout(Impl, groupIndex));
 
         public void SetLabel(string label) => ComputePipelineSetLabel(Impl, label);
-        
+
         public void Dispose()
         {
             ComputePipelineRelease(Impl);
@@ -45,7 +48,7 @@ namespace Reactor.Platform.WGPU.Wrappers
     {
         private PipelineLayoutImpl _impl;
 
-        internal PipelineLayoutImpl Impl 
+        internal PipelineLayoutImpl Impl
         {
             get
             {
@@ -65,7 +68,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             Impl = impl;
         }
-        
+
         public void Dispose()
         {
             PipelineLayoutRelease(Impl);
@@ -85,7 +88,7 @@ namespace Reactor.Platform.WGPU.Wrappers
             Impl = impl;
         }
 
-        internal QuerySetImpl Impl 
+        internal QuerySetImpl Impl
         {
             get
             {
@@ -97,7 +100,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             private set => _impl = value;
         }
-        
+
         public void Dispose()
         {
             QuerySetDestroy(Impl);
@@ -110,7 +113,7 @@ namespace Reactor.Platform.WGPU.Wrappers
     {
         private RenderPipelineImpl _impl;
 
-        internal RenderPipelineImpl Impl 
+        internal RenderPipelineImpl Impl
         {
             get
             {
@@ -135,7 +138,7 @@ namespace Reactor.Platform.WGPU.Wrappers
             => BindGroupLayout.For(RenderPipelineGetBindGroupLayout(Impl, groupIndex));
 
         public void SetLabel(string label) => RenderPipelineSetLabel(Impl, label);
-        
+
         public void Dispose()
         {
             RenderPipelineRelease(Impl);
@@ -147,7 +150,7 @@ namespace Reactor.Platform.WGPU.Wrappers
     {
         private SamplerImpl _impl;
 
-        internal SamplerImpl Impl 
+        internal SamplerImpl Impl
         {
             get
             {
@@ -167,7 +170,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             Impl = impl;
         }
-        
+
         public void Dispose()
         {
             SamplerRelease(Impl);
@@ -179,7 +182,7 @@ namespace Reactor.Platform.WGPU.Wrappers
     {
         private ShaderModuleImpl _impl;
 
-        internal ShaderModuleImpl Impl 
+        internal ShaderModuleImpl Impl
         {
             get
             {
@@ -200,20 +203,42 @@ namespace Reactor.Platform.WGPU.Wrappers
             Impl = impl;
         }
 
-        public unsafe void GetCompilationInfo(CompilationInfoCallback callback)
+        public void GetCompilationInfo(CompilationInfoCallback callback)
         {
-            ShaderModuleGetCompilationInfo(Impl,
-                (CompilationInfoRequestStatus s, in Wgpu.CompilationInfo c, IntPtr _) =>
+            unsafe
+            {
+                var context = new CallbackContext<CompilationInfoRequestStatus, CompilationInfo>
                 {
-                    callback(s,
-                        new ReadOnlySpan<CompilationMessage>((void*)c.messages, (int)c.messages)
-                    );
-
-                }, IntPtr.Zero);
+                    Delegate = (s, p, m, userData) => callback?.Invoke(s, new ReadOnlySpan<CompilationMessage>(p.messages, (int)p.messages)),
+                    UserData = IntPtr.Zero,
+                };
+                var handle = GCHandle.Alloc(context);
+                try
+                {
+                    ShaderModuleGetCompilationInfo(Impl, &GetCompilationInfoCallback, (void*)GCHandle.ToIntPtr(handle));
+                }
+                finally
+                {
+                    if (handle.IsAllocated) handle.Free();
+                }
+            }
         }
-
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        internal static unsafe void GetCompilationInfoCallback(CompilationInfoRequestStatus s, CompilationInfo* info, void* userData)
+        {
+            GCHandle handle = GCHandle.FromIntPtr((IntPtr)userData);
+            try
+            {
+                var context = (CallbackContext<CompilationInfoRequestStatus, CompilationInfo>)handle.Target;
+                context.Delegate.Invoke(s, *info, "", context.UserData);
+            }
+            finally
+            {
+                if (handle.IsAllocated) handle.Free();
+            }
+        }
         public void SetLabel(string label) => ShaderModuleSetLabel(Impl, label);
-        
+
         public void Dispose()
         {
             ShaderModuleRelease(Impl);
@@ -232,7 +257,7 @@ namespace Reactor.Platform.WGPU.Wrappers
         {
             if (impl.Handle == IntPtr.Zero)
                 throw new ResourceCreationError(nameof(SwapChain));
-            
+
             _impl = impl;
         }
 
@@ -249,13 +274,13 @@ namespace Reactor.Platform.WGPU.Wrappers
         }
     }
 
-    public delegate void QueueWorkDoneCallback(QueueWorkDoneStatus status); 
+    public delegate void QueueWorkDoneCallback(QueueWorkDoneStatus status);
 
     public class CommandBuffer : IDisposable
     {
         private CommandBufferImpl _impl;
 
-        internal CommandBufferImpl Impl 
+        internal CommandBufferImpl Impl
         {
             get
             {
@@ -275,7 +300,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             Impl = impl;
         }
-        
+
         public void Dispose()
         {
             CommandBufferRelease(Impl);
@@ -287,7 +312,7 @@ namespace Reactor.Platform.WGPU.Wrappers
     {
         private RenderBundleImpl _impl;
 
-        internal RenderBundleImpl Impl 
+        internal RenderBundleImpl Impl
         {
             get
             {
@@ -306,7 +331,7 @@ namespace Reactor.Platform.WGPU.Wrappers
                 throw new ResourceCreationError(nameof(RenderBundle));
             Impl = impl;
         }
-        
+
         public void Dispose()
         {
             RenderBundleRelease(Impl);

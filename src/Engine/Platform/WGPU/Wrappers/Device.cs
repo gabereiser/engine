@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
-using Reactor.Platform.WGPU.Helpers;
+using System.Runtime.InteropServices;
+using System.Text;
+using Red.Platform.WGPU.Helpers;
 
-using static Reactor.Platform.WGPU.Wgpu;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public struct BindGroupEntry
     {
@@ -72,7 +75,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             private set => _impl = value;
         }
-        
+
         public Queue Queue { get; private set; }
 
         internal Device(DeviceImpl impl)
@@ -104,15 +107,18 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             unsafe
             {
-                return new BindGroup(
-                    DeviceCreateBindGroup(Impl, new BindGroupDescriptor
-                    {
-                        label = label,
-                        layout = layout.Impl,
-                        entries = new IntPtr(Unsafe.AsPointer(ref entriesInner.GetPinnableReference())),
-                        entryCount = (uint)entries.Length
-                    })
-                );
+                fixed (Wgpu.BindGroupEntry* pEntries = entriesInner)
+                {
+                    return new BindGroup(
+                        DeviceCreateBindGroup(Impl, new BindGroupDescriptor
+                        {
+                            label = label,
+                            layout = layout.Impl,
+                            entries = pEntries,
+                            entryCount = (uint)entries.Length
+                        })
+                    );
+                }
             }
         }
 
@@ -120,13 +126,13 @@ namespace Reactor.Platform.WGPU.Wrappers
         {
             unsafe
             {
-                fixed (BindGroupLayoutEntry* entriesPtr = entries)
+                fixed (BindGroupLayoutEntry* pEntries = entries)
                 {
                     return BindGroupLayout.For(
                         DeviceCreateBindGroupLayout(Impl, new BindGroupLayoutDescriptor
                         {
                             label = label,
-                            entries = new IntPtr(entriesPtr),
+                            entries = pEntries,
                             entryCount = (uint)entries.Length
                         })
                     );
@@ -174,19 +180,53 @@ namespace Reactor.Platform.WGPU.Wrappers
 
         public void CreateComputePipelineAsync(string label, CreateComputePipelineAsyncCallback callback, ProgrammableStageDescriptor compute)
         {
-            DeviceCreateComputePipelineAsync(Impl, new ComputePipelineDescriptor
+            var context = new CallbackContext<Wgpu.CreatePipelineAsyncStatus, Wgpu.ComputePipelineImpl>
+            {
+                Delegate = (s, p, m, userData) => callback?.Invoke(s, new ComputePipeline(p), m),
+                UserData = IntPtr.Zero,
+            };
+
+            var handle = GCHandle.Alloc(context);
+            try
+            {
+                unsafe
                 {
-                    label = label,
-                    compute = new Wgpu.ProgrammableStageDescriptor
+                    DeviceCreateComputePipelineAsync(Impl, new ComputePipelineDescriptor
                     {
-                        module = compute.Module.Impl,
-                        entryPoint = compute.EntryPoint
-                    }
-                }, (s, p, m, _) => callback(s, new ComputePipeline(p), m), IntPtr.Zero
-            );
+                        label = label,
+                        compute = new Wgpu.ProgrammableStageDescriptor
+                        {
+                            module = compute.Module.Impl,
+                            entryPoint = compute.EntryPoint
+                        }
+                    }, &CreateComputePipelineAsyncCallback, (void*)GCHandle.ToIntPtr(handle)
+                    );
+                }
+            }
+            finally
+            {
+                if (handle.IsAllocated) handle.Free();
+            }
+        }
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        internal static unsafe void CreateComputePipelineAsyncCallback(Wgpu.CreatePipelineAsyncStatus status, Wgpu.ComputePipelineImpl impl, byte* message, void* userData)
+        {
+            GCHandle handle = GCHandle.FromIntPtr((IntPtr)userData);
+            try
+            {
+                var context = (CallbackContext<CreatePipelineAsyncStatus, ComputePipelineImpl>)handle.Target;
+                string messageStr = (message == null) ? null : Encoding.UTF8.GetString(new ReadOnlySpan<byte>(message, int.MaxValue).Slice(0, (int)Util.StrLen(message)));
+                context.Delegate?.Invoke(status, impl, messageStr, context.UserData);
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
+            }
         }
 
-        public delegate void CreateComputePipelineAsyncCallback(CreatePipelineAsyncStatus status, ComputePipeline pipeline, string message);
 
         public PipelineLayout CreatePipelineLayout(string label, BindGroupLayout[] bindGroupLayouts)
         {
@@ -197,14 +237,17 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             unsafe
             {
-                return new PipelineLayout(
-                    DeviceCreatePipelineLayout(Impl, new PipelineLayoutDescriptor
-                    {
-                        label = label,
-                        bindGroupLayouts = new IntPtr(Unsafe.AsPointer(ref bindGroupLayoutsInner.GetPinnableReference())),
-                        bindGroupLayoutCount = (uint)bindGroupLayouts.Length
-                    })
-                );
+                fixed (BindGroupLayoutImpl* pBindGroup = bindGroupLayoutsInner)
+                {
+                    return new PipelineLayout(
+                        DeviceCreatePipelineLayout(Impl, new PipelineLayoutDescriptor
+                        {
+                            label = label,
+                            bindGroupLayouts = pBindGroup,
+                            bindGroupLayoutCount = (uint)bindGroupLayouts.Length
+                        })
+                    );
+                }
             }
         }
 
@@ -220,7 +263,7 @@ namespace Reactor.Platform.WGPU.Wrappers
                             label = label,
                             type = queryType,
                             count = count,
-                            pipelineStatistics = new IntPtr(pipelineStatisticsPtr),
+                            pipelineStatistics = pipelineStatisticsPtr,
                             pipelineStatisticsCount = (uint)pipelineStatistics.Length
                         })
                     );
@@ -239,7 +282,7 @@ namespace Reactor.Platform.WGPU.Wrappers
                         DeviceCreateRenderBundleEncoder(Impl, new RenderBundleEncoderDescriptor
                         {
                             label = label,
-                            colorFormats = new IntPtr(colorFormatsPtr),
+                            colorFormats = colorFormatsPtr,
                             colorFormatsCount = (uint)colorFormats.Length,
                             depthStencilFormat = depthStencilFormat,
                             sampleCount = sampleCount,
@@ -252,71 +295,107 @@ namespace Reactor.Platform.WGPU.Wrappers
         }
 
         public RenderPipeline CreateRenderPipeline(string label, PipelineLayout layout,
-            VertexState vertexState, PrimitiveState primitiveState, MultisampleState multisampleState, 
+            VertexState vertexState, PrimitiveState primitiveState, MultisampleState multisampleState,
             DepthStencilState? depthStencilState = null, FragmentState? fragmentState = null)
         {
             RenderPipelineDescriptor desc = CreateRenderPipelineDescriptor(label, layout, vertexState, primitiveState, multisampleState, depthStencilState, fragmentState);
             RenderPipelineImpl pipelineImpl = DeviceCreateRenderPipeline(Impl, desc);
-            
+
             FreeRenderPipelineDescriptor(desc);
             return new RenderPipeline(pipelineImpl);
         }
 
         public void CreateRenderPipelineAsync(string label, CreateRenderPipelineAsyncCallback callback, PipelineLayout layout,
-            VertexState vertexState, PrimitiveState primitiveState, MultisampleState multisampleState, 
+            VertexState vertexState, PrimitiveState primitiveState, MultisampleState multisampleState,
             DepthStencilState? depthStencilState = null, FragmentState? fragmentState = null)
         {
             RenderPipelineDescriptor desc = CreateRenderPipelineDescriptor(label, layout, vertexState, primitiveState, multisampleState, depthStencilState, fragmentState);
-            DeviceCreateRenderPipelineAsync(Impl, desc, (s, p, m, _) =>
+            var context = new CallbackContext<Wgpu.CreatePipelineAsyncStatus, RenderPipelineImpl>
             {
-                FreeRenderPipelineDescriptor(desc);
-                callback(s, new RenderPipeline(p), m);
-            }, IntPtr.Zero);
+                Delegate = (s, p, m, userData) =>
+                {
+                    FreeRenderPipelineDescriptor(desc);
+                    callback?.Invoke(s, new RenderPipeline(p), m);
+                },
+                UserData = IntPtr.Zero,
+            };
+            var handle = GCHandle.Alloc(context);
+            try
+            {
+                unsafe
+                {
+                    DeviceCreateRenderPipelineAsync(Impl, desc, &CreateRenderPipelineAsyncCallback, (void*)GCHandle.ToIntPtr(handle));
+                }
+            }
+            finally
+            {
+                if (handle.IsAllocated) handle.Free();
+            }
         }
 
-        public delegate void CreateRenderPipelineAsyncCallback(CreatePipelineAsyncStatus status, RenderPipeline pipeline, string message);
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        internal static unsafe void CreateRenderPipelineAsyncCallback(CreatePipelineAsyncStatus status, RenderPipelineImpl impl, byte* message, void* userData)
+        {
+            GCHandle handle = GCHandle.FromIntPtr((IntPtr)userData);
+            try
+            {
+                var context = (CallbackContext<CreatePipelineAsyncStatus, RenderPipelineImpl>)handle.Target;
+                string messageStr = (message == null) ? null : Encoding.UTF8.GetString(new ReadOnlySpan<byte>(message, int.MaxValue).Slice(0, (int)Util.StrLen(message)));
+                context.Delegate?.Invoke(status, impl, messageStr, context.UserData);
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
+            }
+        }
 
-        private static RenderPipelineDescriptor CreateRenderPipelineDescriptor(string label, PipelineLayout layout, VertexState vertexState, 
-            PrimitiveState primitiveState, MultisampleState multisampleState, DepthStencilState? depthStencilState, 
+        private static RenderPipelineDescriptor CreateRenderPipelineDescriptor(string label, PipelineLayout layout, VertexState vertexState,
+            PrimitiveState primitiveState, MultisampleState multisampleState, DepthStencilState? depthStencilState,
             FragmentState? fragmentState)
         {
-            return new RenderPipelineDescriptor
+            unsafe
             {
-                label = label,
-                layout = layout.Impl,
-                vertex = new Wgpu.VertexState
+                return new RenderPipelineDescriptor
                 {
-                    module = vertexState.Module.Impl,
-                    entryPoint = vertexState.EntryPoint,
-                    buffers = Util.AllocHArray(vertexState.bufferLayouts.Length,
-                        vertexState.bufferLayouts.Select(x => new Wgpu.VertexBufferLayout
-                        {
-                            arrayStride = x.ArrayStride,
-                            stepMode = x.StepMode,
-                            attributes = Util.AllocHArray(x.Attributes),
-                            attributeCount = (uint)x.Attributes.Length
-                        })
-                    ),
-                    bufferCount = (uint)vertexState.bufferLayouts.Length
-                },
-                primitive = primitiveState,
-                depthStencil = Util.Optional(depthStencilState),
-                multisample = multisampleState,
-                fragment = fragmentState == null ? IntPtr.Zero : Util.AllocHStruct(new Wgpu.FragmentState
-                {
-                    module = fragmentState.Value.Module.Impl,
-                    entryPoint = fragmentState.Value.EntryPoint,
-                    targets = Util.AllocHArray(fragmentState.Value.colorTargets.Length,
-                        fragmentState.Value.colorTargets.Select(x => new Wgpu.ColorTargetState
-                        {
-                            format = x.Format,
-                            blend = Util.Optional(x.BlendState),
-                            writeMask = x.WriteMask
-                        })
-                    ),
-                    targetCount = (uint)fragmentState.Value.colorTargets.Length
-                })
-            };
+                    label = label,
+                    layout = layout.Impl,
+                    vertex = new Wgpu.VertexState
+                    {
+                        module = vertexState.Module.Impl,
+                        entryPoint = vertexState.EntryPoint,
+                        buffers = (Wgpu.VertexBufferLayout*)Util.AllocHArray(vertexState.bufferLayouts.Length,
+                            vertexState.bufferLayouts.Select(x => new Wgpu.VertexBufferLayout
+                            {
+                                arrayStride = x.ArrayStride,
+                                stepMode = x.StepMode,
+                                attributes = (VertexAttribute*)Util.AllocHArray(x.Attributes),
+                                attributeCount = (uint)x.Attributes.Length
+                            })
+                        ),
+                        bufferCount = (uint)vertexState.bufferLayouts.Length
+                    },
+                    primitive = primitiveState,
+                    depthStencil = (DepthStencilState*)Util.Optional(depthStencilState),
+                    multisample = multisampleState,
+                    fragment = fragmentState == null ? null : (Wgpu.FragmentState*)Util.AllocHStruct(new Wgpu.FragmentState
+                    {
+                        module = fragmentState.Value.Module.Impl,
+                        entryPoint = fragmentState.Value.EntryPoint,
+                        targets = (Wgpu.ColorTargetState*)Util.AllocHArray(fragmentState.Value.colorTargets.Length,
+                            fragmentState.Value.colorTargets.Select(x => new Wgpu.ColorTargetState
+                            {
+                                format = x.Format,
+                                blend = (BlendState*)Util.Optional(x.BlendState),
+                                writeMask = x.WriteMask
+                            })
+                        ),
+                        targetCount = (uint)fragmentState.Value.colorTargets.Length
+                    })
+                };
+            }
         }
 
         private static void FreeRenderPipelineDescriptor(RenderPipelineDescriptor descriptor)
@@ -326,27 +405,27 @@ namespace Reactor.Platform.WGPU.Wrappers
                 Wgpu.VertexBufferLayout* buffers = (Wgpu.VertexBufferLayout*)descriptor.vertex.buffers;
 
                 for (ulong i = 0; i < descriptor.vertex.bufferCount; i++)
-                    Util.FreePtr(buffers[i].attributes);
-                
-                Util.FreePtr(descriptor.vertex.buffers);
-                Util.FreePtr(descriptor.depthStencil);
+                    Util.FreePtr((nint)buffers[i].attributes);
 
-                if (descriptor.fragment == IntPtr.Zero)
+                Util.FreePtr((nint)descriptor.vertex.buffers);
+                Util.FreePtr((nint)descriptor.depthStencil);
+
+                if (descriptor.fragment == null)
                     return;
 
                 Wgpu.FragmentState* fragment = (Wgpu.FragmentState*)descriptor.fragment;
                 Wgpu.ColorTargetState* targets = (Wgpu.ColorTargetState*)fragment->targets;
-                
+
                 for (ulong i = 0; i < fragment->targetCount; i++)
-                    Util.FreePtr(targets[i].blend);
-                
-                Util.FreePtr(fragment->targets);
-                Util.FreePtr(descriptor.fragment);
+                    Util.FreePtr((nint)targets[i].blend);
+
+                Util.FreePtr((nint)fragment->targets);
+                Util.FreePtr((nint)descriptor.fragment);
             }
         }
 
         public Sampler CreateSampler(string label, AddressMode addressModeU, AddressMode addressModeV, AddressMode addressModeW,
-            FilterMode magFilter, FilterMode minFilter, MipmapFilterMode mipmapFilter, 
+            FilterMode magFilter, FilterMode minFilter, MipmapFilterMode mipmapFilter,
             float lodMinClamp, float lodMaxClamp, CompareFunction compare, ushort maxAnisotropy)
         {
             return new Sampler(
@@ -369,40 +448,49 @@ namespace Reactor.Platform.WGPU.Wrappers
 
         public ShaderModule CreateSprivShaderModule(string label, byte[] spirvCode)
         {
-            return new ShaderModule(
-                DeviceCreateShaderModule(Impl, new ShaderModuleDescriptor
-                {
-                    label = label,
-                    nextInChain = new WgpuStructChain()
+            unsafe
+            {
+                return new ShaderModule(
+                    DeviceCreateShaderModule(Impl, new ShaderModuleDescriptor
+                    {
+                        label = label,
+                        nextInChain = (Wgpu.ChainedStruct*)new WgpuStructChain()
                     .AddShaderModuleSPIRVDescriptor(spirvCode)
                     .GetPointer()
-                })
-            );
+                    })
+                );
+            }
         }
 
         public ShaderModule CreateWgslShaderModule(string label, string wgslCode)
         {
-            return new ShaderModule(
-                DeviceCreateShaderModule(Impl, new ShaderModuleDescriptor
-                {
-                    label = label,
-                    nextInChain = new WgpuStructChain()
-                    .AddShaderModuleWGSLDescriptor(wgslCode)
-                    .GetPointer()
-                })
-            );
+            unsafe
+            {
+                return new ShaderModule(
+                    DeviceCreateShaderModule(Impl, new ShaderModuleDescriptor
+                    {
+                        label = label,
+                        nextInChain = (Wgpu.ChainedStruct*)new WgpuStructChain()
+                        .AddShaderModuleWGSLDescriptor(wgslCode)
+                        .GetPointer()
+                    })
+                );
+            }
         }
 
-        public ShaderModule CreateGlslShaderModule(string label, string vertCode, string fragCode, string[] defines)
+        public ShaderModule CreateGlslShaderModule(string label, string vertCode, string fragCode, Wgpu.ShaderDefine[] defines)
         {
-            return new ShaderModule(DeviceCreateShaderModule(Impl, new ShaderModuleDescriptor
+            unsafe
+            {
+                return new ShaderModule(DeviceCreateShaderModule(Impl, new ShaderModuleDescriptor
                 {
                     label = label,
-                    nextInChain = new WgpuStructChain()
-                    .AddShaderModuleGLSLDescriptor(vertCode, fragCode, defines)
-                    .GetPointer()
+                    nextInChain = (ChainedStruct*)new WgpuStructChain()
+                        .AddShaderModuleGLSLDescriptor(vertCode, fragCode, defines)
+                        .GetPointer()
                 })
-            );
+                );
+            }
         }
         public SwapChain CreateSwapChain(string label, Surface surface, TextureUsage usage,
             TextureFormat format, uint width, uint height, PresentMode presentMode)
@@ -478,12 +566,45 @@ namespace Reactor.Platform.WGPU.Wrappers
         public void PushErrorScope(ErrorFilter filter) => DevicePushErrorScope(Impl, filter);
         public void PopErrorScope(ErrorCallback callback)
         {
-            DevicePopErrorScope(Impl,
-                (t, m, _) => callback(t, m),
-                IntPtr.Zero);
+            var context = new Callback<ErrorType>
+            {
+                Delegate = (t, m, _) => callback?.Invoke(t, m),
+                UserData = IntPtr.Zero,
+            };
+            var handle = GCHandle.Alloc(context);
+            try
+            {
+                unsafe
+                {
+                    DevicePopErrorScope(Impl,
+                        &DevicePopErrorScopeCallback,
+                        (void*)GCHandle.ToIntPtr(handle));
+                }
+            }
+            finally
+            {
+                if (handle.IsAllocated) handle.Free();
+            }
         }
-
-        private static readonly List<Wgpu.ErrorCallback> s_errorCallbacks = 
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        internal static unsafe void DevicePopErrorScopeCallback(Wgpu.ErrorType errorType, byte* message, void* userData)
+        {
+            GCHandle handle = GCHandle.FromIntPtr((IntPtr)userData);
+            try
+            {
+                var context = (Callback<ErrorType>)handle.Target;
+                string messageStr = (message == null) ? null : Encoding.UTF8.GetString(new ReadOnlySpan<byte>(message, int.MaxValue).Slice(0, (int)Util.StrLen(message)));
+                context.Delegate?.Invoke(errorType, messageStr, context.UserData);
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
+            }
+        }
+        private static readonly List<Wgpu.ErrorCallback> s_errorCallbacks =
             new List<Wgpu.ErrorCallback>();
 
         public void SetUncapturedErrorCallback(ErrorCallback callback)
@@ -492,16 +613,48 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             s_errorCallbacks.Add(errorCallback);
 
-            DeviceSetUncapturedErrorCallback(Impl,
-                errorCallback,
-                IntPtr.Zero);
+            var context = new Callback<ErrorType>
+            {
+                Delegate = (t, m, _) => callback?.Invoke(t, m),
+                UserData = IntPtr.Zero,
+            };
+            var handle = GCHandle.Alloc(context);
+            try
+            {
+                unsafe
+                {
+                    DeviceSetUncapturedErrorCallback(Impl,
+                        &DeviceSetUncapturedCallback, (void*)GCHandle.ToIntPtr(handle));
+                }
+            }
+            finally
+            {
+                if (handle.IsAllocated) handle.Free();
+            }
         }
-        
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        internal static unsafe void DeviceSetUncapturedCallback(Wgpu.ErrorType errorType, byte* message, void* userData)
+        {
+            GCHandle handle = GCHandle.FromIntPtr((IntPtr)userData);
+            try
+            {
+                var context = (Callback<ErrorType>)handle.Target;
+                string messageStr = (message == null) ? null : Encoding.UTF8.GetString(new ReadOnlySpan<byte>(message, int.MaxValue).Slice(0, (int)Util.StrLen(message)));
+                context.Delegate?.Invoke(errorType, messageStr, context.UserData);
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
+            }
+        }
         public void Dispose()
         {
             Queue.Dispose();
             Queue = null;
-            
+
             DeviceDestroy(Impl);
             DeviceRelease(Impl);
             Impl = default;
@@ -510,4 +663,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
     public delegate void ErrorCallback(ErrorType type, string message);
     public delegate void DeviceLostCallback(DeviceLostReason reason, string message);
+
+    public delegate void CreateComputePipelineAsyncCallback(CreatePipelineAsyncStatus status, ComputePipeline pipeline, string message);
+    public delegate void CreateRenderPipelineAsyncCallback(CreatePipelineAsyncStatus status, RenderPipeline pipeline, string message);
 }

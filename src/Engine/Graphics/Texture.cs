@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using Reactor.Common;
-using Reactor.Platform;
-using Reactor.Platform.WGPU;
-using Reactor.Types;
+using Red.Common;
+using Red.Platform;
+using Red.Platform.WGPU;
+using Red.Types;
 
 
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public class Texture : IDisposable
     {
@@ -28,9 +28,9 @@ namespace Reactor.Graphics
         public string Name;
 
         public PixelFormat PixelFormat { get; set; } = PixelFormat.Rgba;
-        
+
         public PixelType PixelType { get; set; } = PixelType.UnsignedByte;
-        
+
         internal TextureTarget textureTarget;
 
         public TextureMagFilter MagFilter { get; set; }
@@ -38,13 +38,13 @@ namespace Reactor.Graphics
         public TextureWrapMode WrapS { get; set; }
         public TextureWrapMode WrapT { get; set; }
         public TextureWrapMode WrapR { get; set; }
-        
+
         #region IDisposable implementation
 
         public Texture()
-        {}
+        { }
 
-        internal Texture(Reactor.Platform.WGPU.Wrappers.Texture texture, PixelFormat pixelFormat)
+        internal Texture(Red.Platform.WGPU.Wrappers.Texture texture, PixelFormat pixelFormat)
         {
             Name = texture.Label;
             Filename = texture.Label;
@@ -118,7 +118,7 @@ namespace Reactor.Graphics
             try
             {
                 //ImageGDI.LoadFromBitmap(ref bitmap, out Id, out textureTarget, out pixelFormat, out pixelType,
-                    //out Bounds);
+                //out Bounds);
             }
             catch (Exception e)
             {
@@ -137,7 +137,7 @@ namespace Reactor.Graphics
                 try
                 {
                     //ImageDDS.LoadFromDisk(FileSystem.Instance.GetFilePath(filename), out Id, out textureTarget,
-                        //out pixelFormat, out pixelType);
+                    //out pixelFormat, out pixelType);
                 }
                 catch (Exception e)
                 {
@@ -148,7 +148,7 @@ namespace Reactor.Graphics
                 try
                 {
                     //ImageGDI.LoadFromDisk(FileSystem.Instance.GetFilePath(filename), out Id, out textureTarget,
-                        //out pixelFormat, out pixelType, out Bounds);
+                    //out pixelFormat, out pixelType, out Bounds);
                 }
                 catch (Exception e)
                 {
@@ -214,7 +214,7 @@ namespace Reactor.Graphics
             //GPU.CheckError();
             Unbind();
         }
-        
+
 
         protected bool isPowerOfTwo(uint x)
         {
@@ -333,7 +333,7 @@ namespace Reactor.Graphics
         Repeat,
         Mirror,
     }
-    
+
     public enum TextureLayer
     {
         TEXTURE0 = 0,
@@ -369,7 +369,7 @@ namespace Reactor.Graphics
         TEXTURE30,
         TEXTURE31
     }
-    
+
     public enum DepthFormat
     {
         None = -1,
@@ -421,6 +421,6 @@ namespace Reactor.Graphics
         // DXT1 also has a 1-bit alpha form
         Dxt1a = 70
     }
-    
-    
+
+
 }

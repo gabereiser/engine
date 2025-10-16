@@ -26,7 +26,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     /// <summary>
     ///     Describes a 2D-point.
@@ -220,9 +220,9 @@ namespace Reactor.Math3D
         }
 
         /// <summary>
-        ///     Converts from a Reactor.Math.Point to a System.Drawing.Point
+        ///     Converts from a Red.Math.Point to a System.Drawing.Point
         /// </summary>
-        /// <param name="value"><see cref="Reactor.Math.Point">Point</see> to convert</param>
+        /// <param name="value"><see cref="Red.Math.Point">Point</see> to convert</param>
         /// <returns>
         ///     <see cref="System.Drawing.Point">System.Drawing.Point</see>
         /// </returns>
@@ -233,11 +233,11 @@ namespace Reactor.Math3D
         }
 
         /// <summary>
-        ///     Converts from a System.Drawing.Point to a Reactor.Math.Point
+        ///     Converts from a System.Drawing.Point to a Red.Math.Point
         /// </summary>
         /// <param name="value"><see cref="System.Drawing.Point">System.Drawing.Point</see> to convert</param>
         /// <returns>
-        ///     <see cref="Reactor.Math.Point">Point</see>
+        ///     <see cref="Red.Math.Point">Point</see>
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Point(System.Drawing.Point value)

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Drawing;
-using Reactor.Graphics;
+using Red.Graphics;
 
-namespace Reactor.Types
+namespace Red.Types
 {
     public class Bitmap : IDisposable
     {
         public int Width { get; set; }
         public int Height { get; set; }
-        
+
         public RColor[] Pixels { get; set; }
 
         public PixelFormat PixelFormat { get; set; } = PixelFormat.Rgba;
@@ -23,7 +23,7 @@ namespace Reactor.Types
 
         public void Clear(RColor color)
         {
-            for(var y = 0; y < Height; ++y)
+            for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
                 {
                     Pixels[x * y] = color;
@@ -54,7 +54,7 @@ namespace Reactor.Types
         void setRGBA(byte[] data)
         {
             var i = 0;
-            for(var y = 0; y < Height; ++y)
+            for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
                 {
                     var c = new RColor();
@@ -66,11 +66,11 @@ namespace Reactor.Types
                     i += 4;
                 }
         }
-        
+
         void setBGRA(byte[] data)
         {
             var i = 0;
-            for(var y = 0; y < Height; ++y)
+            for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
                 {
                     var c = new RColor();
@@ -82,11 +82,11 @@ namespace Reactor.Types
                     i += 4;
                 }
         }
-        
+
         void setARGB(byte[] data)
         {
             var i = 0;
-            for(var y = 0; y < Height; ++y)
+            for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
                 {
                     var c = new RColor();
@@ -101,7 +101,7 @@ namespace Reactor.Types
         void setR8(byte[] data)
         {
             var i = 0;
-            for(var y = 0; y < Height; ++y)
+            for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
                 {
                     var c = new RColor();
@@ -122,12 +122,12 @@ namespace Reactor.Types
         {
             if (bitmap.PixelFormat != PixelFormat)
                 throw new Exception("PixelFormat mismatch");
-            
-            
+
+
         }
         public void Dispose()
         {
         }
-        
+
     }
 }

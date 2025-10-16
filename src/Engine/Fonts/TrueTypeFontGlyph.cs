@@ -1,9 +1,9 @@
 ﻿using System.IO;
-using Reactor.Math3D;
-using Reactor.Types;
+using Red.Math3D;
+using Red.Types;
 using Rectangle = System.Drawing.Rectangle;
 
-namespace Reactor.Fonts
+namespace Red.Fonts
 {
     internal class TrueTypeFontGlyph
     {
@@ -53,6 +53,6 @@ namespace Reactor.Fonts
 
             Advance = stream.ReadInt32();
         }
-        
+
     }
 }

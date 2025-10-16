@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace Reactor.Platform.glTF
+namespace Red.Platform.glTF
 {
     internal class ArrayConverter : JsonConverter
     {

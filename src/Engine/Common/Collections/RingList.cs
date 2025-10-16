@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Reactor.Common.Collections
+namespace Red.Common.Collections
 {
     public class RingList<T> : List<T>
     {
@@ -11,7 +11,7 @@ namespace Reactor.Common.Collections
         {
             Limit = limit;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public new void Add(T item)
         {

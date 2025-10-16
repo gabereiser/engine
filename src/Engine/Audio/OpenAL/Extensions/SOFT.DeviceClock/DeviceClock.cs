@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     public partial class ALC
     {

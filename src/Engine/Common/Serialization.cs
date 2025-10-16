@@ -25,7 +25,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Common
+namespace Red.Common
 {
     public static class Serialization
     {
@@ -90,7 +90,7 @@ namespace Reactor.Common
         {
             return (byte*)Marshal.StringToHGlobalAnsi(text);
         }
-        
+
         public static unsafe string GetString(byte* stringStart)
         {
             int characters = 0;

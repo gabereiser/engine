@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Drawing;
-using Reactor.Platform;
-using Reactor.Types;
-using Reactor.Platform.WGPU;
+using Red.Platform;
+using Red.Types;
+using Red.Platform.WGPU;
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public class Texture2D : Texture
     {
@@ -48,7 +48,7 @@ namespace Reactor.Graphics
             WrapS = TextureWrapMode.ClampToBorder;
             WrapR = TextureWrapMode.ClampToBorder;
             WrapT = TextureWrapMode.ClampToBorder;
-            
+
         }
 
         public void CreateDepth(int width, int height, PixelFormat format, DepthFormat depthFormat)

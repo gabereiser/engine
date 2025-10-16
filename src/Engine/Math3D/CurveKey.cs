@@ -23,7 +23,7 @@
 
 using System;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     public class CurveKey : IEquatable<CurveKey>, IComparable<CurveKey>
     {

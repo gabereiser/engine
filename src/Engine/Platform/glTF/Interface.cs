@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Reactor.Platform.glTF.Schema;
+using Red.Platform.glTF.Schema;
 using Newtonsoft.Json;
 
-namespace Reactor.Platform.glTF
+namespace Red.Platform.glTF
 {
     public static class Interface
     {
@@ -260,7 +260,7 @@ namespace Reactor.Platform.glTF
                 var bufferView = model.BufferViews[image.BufferView.Value];
                 var bufferStream = model.LoadBinaryBuffer(bufferView.Buffer, externalReferenceSolver);
                 var buffer = new BinaryReader(bufferStream);
-                
+
                 return new MemoryStream(buffer.ReadBytes((int)bufferStream.Length), bufferView.ByteOffset, bufferView.ByteLength);
             }
 
@@ -270,7 +270,7 @@ namespace Reactor.Platform.glTF
 
             return imageData;
         }
-        
+
 
         private static Stream OpenEmbeddedImage(Image image)
         {
@@ -489,7 +489,7 @@ namespace Reactor.Platform.glTF
                         {
                             memoryStream.Write(reader.ReadBytes((int)data.Length), bufferView.ByteOffset, bufferView.ByteLength);
                         }
-                        
+
 
                         bufferView.Buffer = 0;
                         bufferView.ByteOffset = (int)byteOffset;
@@ -537,7 +537,7 @@ namespace Reactor.Platform.glTF
             {
                 model.SaveBinaryModel(reader.ReadBytes((int)binBufferData.Length), binaryWriter);
             }
-            
+
         }
 
         /// <summary>
@@ -603,7 +603,7 @@ namespace Reactor.Platform.glTF
                                 {
                                     fileStream.Write(reader.ReadBytes((int)binBufferData.Length), bufferView.ByteOffset, bufferView.ByteLength);
                                 }
-                                
+
                             }
 
                             image.BufferView = null;
@@ -635,7 +635,7 @@ namespace Reactor.Platform.glTF
                                 {
                                     fileStream.Write(reader.ReadBytes((int)binBufferData.Length), bufferView.ByteOffset, bufferView.ByteLength);
                                 }
-                                
+
                                 bufferView.ByteOffset = (int)fileStreamPosition;
                             }
 

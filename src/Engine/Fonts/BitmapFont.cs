@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Reactor.Fonts
+namespace Red.Fonts
 {
     public class BitmapFont : Font
     {
@@ -8,12 +8,12 @@ namespace Reactor.Fonts
 
         internal BitmapFont(string filename)
         {
-            
+
         }
 
         internal BitmapFont(Stream stream)
         {
-            
+
         }
     }
 }

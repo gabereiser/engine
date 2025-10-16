@@ -24,11 +24,11 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Reactor.Geometry;
-using Reactor.Platform;
-using Buffer = Reactor.Platform.WGPU.Wrappers.Buffer;
+using Red.Geometry;
+using Red.Platform;
+using Buffer = Red.Platform.WGPU.Wrappers.Buffer;
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public class IndexBuffer : IDisposable
     {
@@ -74,7 +74,7 @@ namespace Reactor.Graphics
                 ibo.Dispose();
                 GPU.CheckError();
             }
-            
+
         }
 
         #endregion
@@ -98,7 +98,7 @@ namespace Reactor.Graphics
                         "Index buffers can only be created for types that are sixteen or thirty two bits in length");
             }
         }
-        
+
         public void GetData<T>(int offsetInBytes, T[] data, int startIndex, int elementCount) where T : struct
         {
             if (data == null)

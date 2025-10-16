@@ -1,7 +1,7 @@
 ﻿using System;
-using Reactor.Types;
+using Red.Types;
 
-namespace Reactor.Graphics
+namespace Red.Graphics
 {
     public class TextureCube : Texture
     {

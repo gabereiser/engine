@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Reactor.Common;
-using Reactor.Math3D;
+using Red.Common;
+using Red.Math3D;
 
-namespace Reactor.Entities
+namespace Red.Entities
 {
     public class SceneNode : IDisposable
     {
@@ -12,7 +12,7 @@ namespace Reactor.Entities
         public SceneNode Parent { get; private set; }
         public List<SceneNode> Children { get; private set; } = new List<SceneNode>();
 
-        
+
         // used for BVH splitting and calculation.
         private SceneNode Left { get; set; }
         private SceneNode Right { get; set; }
@@ -20,7 +20,7 @@ namespace Reactor.Entities
         public SceneNode() : this(new BoundingBox())
         {
         }
-        
+
         public SceneNode(BoundingBox bounds)
         {
             Bounds = bounds;

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using Reactor.Platform.WGPU.Helpers;
-using static Reactor.Platform.WGPU.Wgpu;
+using System.Runtime.InteropServices;
+using System.Text;
+using Red.Platform.WGPU.Helpers;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public struct RequiredLimits
     {
@@ -64,7 +66,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
         public bool HasFeature(FeatureName feature) => AdapterHasFeature(Impl, feature);
 
-        public void RequestDevice(RequestDeviceCallback callback, string label, NativeFeature[] nativeFeatures, QueueDescriptor defaultQueue = default, 
+        public void RequestDevice(RequestDeviceCallback callback, string label, NativeFeature[] nativeFeatures, QueueDescriptor defaultQueue = default,
             Limits? limits = null, RequiredLimitsExtras? limitsExtras = null, DeviceExtras? deviceExtras = null, DeviceLostCallback deviceLostCallback = null)
         {
             Wgpu.RequiredLimits requiredLimits = default;
@@ -80,42 +82,108 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             if (limits != null)
             {
-                requiredLimits = new Wgpu.RequiredLimits
+                unsafe
                 {
-                    nextInChain = limitsExtras == null
-                        ? IntPtr.Zero
-                        : limitsExtrasChain.GetPointer(),
-                    limits = limits.Value
-                };
+                    requiredLimits = new Wgpu.RequiredLimits
+                    {
+
+                        nextInChain = limitsExtras == null
+                            ? (Wgpu.ChainedStruct*)IntPtr.Zero
+                            : (Wgpu.ChainedStruct*)limitsExtrasChain.GetPointer(),
+                        limits = limits.Value
+                    };
+                }
             }
 
             if (deviceExtras != null)
                 deviceExtrasChain = new WgpuStructChain().AddDeviceExtras(deviceExtras.Value.TracePath);
 
-            unsafe
+            GCHandle losthandle = default;
+            var lostcontext = new Callback<Wgpu.DeviceLostReason>
             {
-                fixed (NativeFeature* requiredFeatures = nativeFeatures)
+                Delegate = (s, m, userData) => deviceLostCallback.Invoke(s, m),
+                UserData = IntPtr.Zero,
+            };
+
+            GCHandle handle = default;
+            var context = new CallbackContext<RequestDeviceStatus, DeviceImpl>
+            {
+                Delegate = (s, d, m, userData) => callback.Invoke(s, new Device(d), m),
+                UserData = IntPtr.Zero
+            };
+            handle = GCHandle.Alloc(context);
+            losthandle = GCHandle.Alloc(lostcontext);
+            IntPtr pLabel = IntPtr.Zero;
+            try
+            {
+                pLabel = Marshal.StringToHGlobalAnsi(label);
+                unsafe
                 {
-                    AdapterRequestDevice(Impl, new DeviceDescriptor()
+                    fixed (NativeFeature* requiredFeatures = nativeFeatures)
+                    {
+                        AdapterRequestDevice(Impl, new DeviceDescriptor()
                         {
                             defaultQueue = defaultQueue,
-                            requiredLimits = limits != null ? new IntPtr(&requiredLimits) : IntPtr.Zero,
+                            requiredLimits = limits != null ? &requiredLimits : null,
                             requiredFeaturesCount = (uint)nativeFeatures.Length,
-                            requiredFeatures = new IntPtr(requiredFeatures),
+                            requiredFeatures = (FeatureName*)requiredFeatures,
                             label = label,
-                            deviceLostCallback = (reason, message, _) => deviceLostCallback?.Invoke(reason, message),
-                            nextInChain = deviceExtras==null ? IntPtr.Zero : deviceExtrasChain.GetPointer()
-                        }, 
-                        (s,d,m,_) => callback(s,new Device(d),m), IntPtr.Zero);
+                            deviceLostCallback = &DeviceLostCallback,
+                            nextInChain = deviceExtras == null ? null : (ChainedStruct*)deviceExtrasChain.GetPointer()
+                        },
+                            &RequestDeviceCallback, (void*)GCHandle.ToIntPtr(handle));
+                    }
                 }
             }
-            
+            finally
+            {
+                if (handle.IsAllocated) handle.Free();
+                if (losthandle.IsAllocated) losthandle.Free();
+                if (pLabel != IntPtr.Zero) Marshal.FreeHGlobal(pLabel);
+            }
+
             limitsExtrasChain?.Dispose();
             deviceExtrasChain?.Dispose();
         }
 
-        public void Dispose() => AdapterRelease(Impl);
-    }
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        internal static unsafe void DeviceLostCallback(DeviceLostReason reason, byte* message, void* userData)
+        {
+            GCHandle handle = GCHandle.FromIntPtr((IntPtr)userData);
+            try
+            {
+                var context = (Callback<DeviceLostReason>)handle.Target;
+                string messageStr = (message == null) ? null : Encoding.UTF8.GetString(new ReadOnlySpan<byte>(message, int.MaxValue).Slice(0, (int)Util.StrLen(message)));
+                context.Delegate?.Invoke(reason, messageStr, context.UserData);
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
+            }
+        }
 
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        internal static unsafe void RequestDeviceCallback(RequestDeviceStatus status, DeviceImpl device, byte* message, void* userData)
+        {
+            GCHandle handle = GCHandle.FromIntPtr((IntPtr)userData);
+            try
+            {
+                var context = (CallbackContext<RequestDeviceStatus, DeviceImpl>)handle.Target;
+                string messageStr = (message == null) ? null : Encoding.UTF8.GetString(new ReadOnlySpan<byte>(message, int.MaxValue).Slice(0, (int)Util.StrLen(message)));
+                context.Delegate?.Invoke(status, device, messageStr, context.UserData);
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
+            }
+        }
+        public void Dispose() => AdapterRelease(Impl);
+    };
     public delegate void RequestDeviceCallback(RequestDeviceStatus status, Device device, string message);
 }

@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct BoundingBox : IEquatable<BoundingBox>
@@ -61,7 +61,7 @@ namespace Reactor.Math3D
         {
             get
             {
-                return (Max - (Min*0.5f));
+                return (Max - (Min * 0.5f));
             }
         }
         #endregion
@@ -526,12 +526,12 @@ namespace Reactor.Math3D
         {
             result = Intersects(ray);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetLongestAxis()
         {
             Vector3 size = Max - Min;
-    
+
             // Compare the differences in each dimension (X, Y, Z)
             if (size.X >= size.Y && size.X >= size.Z)
             {
@@ -546,14 +546,14 @@ namespace Reactor.Math3D
                 return 2; // Z-axis is the longest
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
         {
             return "{{Min:" + Min + " Max:" + Max + "}}";
         }
         #endregion Public Methods
-        
+
         #region Operator Overloads
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

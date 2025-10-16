@@ -11,4 +11,4 @@
 *.pem
 *.crt
 
-
+**.key.snk

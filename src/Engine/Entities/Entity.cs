@@ -1,7 +1,7 @@
-﻿using Reactor.Components;
+﻿using Red.Components;
 using System.Collections.Generic;
 
-namespace Reactor.Entities
+namespace Red.Entities
 {
     public class Entity : SceneNode
     {
@@ -16,7 +16,7 @@ namespace Reactor.Entities
             Components.Add(component);
             component.entity = this;
         }
-        
+
         public T GetComponent<T>() where T : Component
         {
             foreach (Component component in Components)

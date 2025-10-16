@@ -10,7 +10,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     /// <summary>
     ///     Opaque handle to an OpenAL device.
@@ -31,7 +31,7 @@ namespace Reactor.Audio.OpenAL
             return obj is ALDevice device && Equals(device);
         }
 
-        public bool Equals( ALDevice other)
+        public bool Equals(ALDevice other)
         {
             return Handle.Equals(other.Handle);
         }

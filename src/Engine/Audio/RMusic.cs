@@ -49,7 +49,7 @@
 using System;
 using System.IO;
 
-namespace Reactor.Audio
+namespace Red.Audio
 {
     public class RMusic
     {

@@ -1,7 +1,7 @@
-﻿namespace Reactor.Graphics
+﻿namespace Red.Graphics
 {
     public class FrameBuffer
     {
-        
+
     }
 }

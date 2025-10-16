@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     public enum CurveContinuity
     {

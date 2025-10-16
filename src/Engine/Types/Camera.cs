@@ -1,15 +1,15 @@
-﻿using Reactor.Components;
-using Reactor.Entities;
-using Reactor.Math3D;
+﻿using Red.Components;
+using Red.Entities;
+using Red.Math3D;
 
-namespace Reactor.Types
+namespace Red.Types
 {
     public class Camera : Entity
     {
         public float Near { get; set; }
         public float Far { get; set; }
         public float Zoom { get; set; }
-        
+
         public Matrix Projection { get; set; }
         public Matrix View { get; set; }
 

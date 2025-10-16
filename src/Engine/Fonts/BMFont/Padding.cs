@@ -29,12 +29,12 @@
  * Licensed under the MIT License. See license.txt for the full text.
  */
 
-namespace Reactor.Fonts.BMFont
+namespace Red.Fonts.BMFont
 {
-  /// <summary>
-  ///     Represents padding or margin information associated with an element.
-  /// </summary>
-  public struct Padding
+    /// <summary>
+    ///     Represents padding or margin information associated with an element.
+    /// </summary>
+    public struct Padding
     {
         #region Constructors
 

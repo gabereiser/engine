@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Drawing;
-using Reactor.Graphics;
+using Red.Graphics;
 using GLFW;
-using Reactor.Math3D;
-using Reactor.Platform.WGPU.Wrappers;
-using Reactor.Platform.Windows;
-using Reactor.Systems;
-using Reactor.Platform.WGPU;
-using Reactor.Common;
+using Red.Math3D;
+using Red.Platform.WGPU.Wrappers;
+using Red.Platform.Windows;
+using Red.Systems;
+using Red.Platform.WGPU;
+using Red.Common;
 
-namespace Reactor.Platform
+namespace Red.Platform
 {
     public class Window : NativeWindow, IDisposable
     {
-        
+
         internal IGraphicsContext _context;
-        
+
         public Action Load;
         public Action Resize;
 
@@ -42,7 +42,7 @@ namespace Reactor.Platform
         {
             if (!Glfw.Init())
                 throw new Exception("Unable to initialize Glfw");
-            
+
             Glfw.WindowHint(Hint.ClientApi, ClientApi.None);
         }
 
@@ -60,7 +60,7 @@ namespace Reactor.Platform
             Glfw.PollEvents();
             GraphicsSystem.Register(this);
         }
-        
+
         /*public IInputContext GetInputContext()
         {
             return _window.CreateInput();
@@ -70,7 +70,7 @@ namespace Reactor.Platform
         {
             return _context;
         }
-        
+
         internal Surface CreateWebGPUSurface(ref Instance instance)
         {
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
@@ -88,12 +88,12 @@ namespace Reactor.Platform
 
             return new Surface(new Wgpu.SurfaceImpl(handle));
         }
-        
+
         public void Dispose()
         {
             _context?.Dispose();
         }
-        
-        
+
+
     }
 }

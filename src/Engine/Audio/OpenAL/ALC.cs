@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Reactor.Audio.OpenAL.Native;
+using Red.Audio.OpenAL.Native;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     /// <summary>Alc = Audio Library Context.</summary>
     public partial class ALC : ALBase

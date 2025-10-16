@@ -7,7 +7,7 @@
     {
         #region Constants
         // no use in allocating a string every time there's an error, so like the rest
-        // of Reactor, we use static strings.
+        // of Red, we use static strings.
         private static string notInitialized = "Not Initialized";
         private static string noCurrentContext = "No Current Context";
         private static string invalidEnum = "Invalid Enum";

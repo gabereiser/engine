@@ -24,7 +24,7 @@
 using System;
 using System.Reflection;
 
-namespace Reactor.Common
+namespace Red.Common
 {
     internal static class ReflectionHelpers
     {

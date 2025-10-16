@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using static Reactor.Platform.WGPU.Wgpu;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public class TextureView : IDisposable
     {
-        private static Dictionary<TextureViewImpl, TextureView> instances = 
+        private static Dictionary<TextureViewImpl, TextureView> instances =
             new Dictionary<TextureViewImpl, TextureView>();
 
         private TextureViewImpl _impl;
 
-        internal TextureViewImpl Impl 
+        internal TextureViewImpl Impl
         {
             get
             {
@@ -23,7 +23,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             set => _impl = value;
         }
-        
+
         /// <summary>
         /// The Texture this TextureView belongs to. If this TextureView belongs to the SwapChain, then this is null.
         /// </summary>
@@ -59,7 +59,7 @@ namespace Reactor.Platform.WGPU.Wrappers
             => impl.Handle == IntPtr.Zero ? null : instances[impl];
 
         internal static void Forget(TextureViewImpl impl) => instances.Remove(impl);
-        
+
         /// <summary>
         /// This function will be called automatically when this TextureView's associated Texture is disposed.
         /// If you dispose the TextureView yourself, 

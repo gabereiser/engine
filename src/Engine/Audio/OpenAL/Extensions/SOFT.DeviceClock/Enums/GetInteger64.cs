@@ -1,4 +1,4 @@
-﻿namespace Reactor.Audio.OpenAL
+﻿namespace Red.Audio.OpenAL
 {
     public enum GetInteger64
     {

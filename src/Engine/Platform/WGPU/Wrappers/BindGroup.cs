@@ -1,13 +1,13 @@
 ﻿using System;
-using static Reactor.Platform.WGPU.Wgpu;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public class BindGroup : IDisposable
     {
         private BindGroupImpl _impl;
 
-        internal BindGroupImpl Impl 
+        internal BindGroupImpl Impl
         {
             get
             {

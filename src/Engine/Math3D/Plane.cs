@@ -26,7 +26,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     internal class PlaneHelper
     {

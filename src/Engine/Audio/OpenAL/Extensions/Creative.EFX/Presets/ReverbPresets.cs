@@ -7,9 +7,9 @@
 // of the MIT license. See the LICENSE file for details.
 //
 
-using Reactor.Math3D;
+using Red.Math3D;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     /// <summary>
     ///     A set of reverb presets that can be used with the extension.

@@ -32,12 +32,12 @@
 using System;
 using System.Drawing;
 
-namespace Reactor.Fonts.BMFont
+namespace Red.Fonts.BMFont
 {
-  /// <summary>
-  ///     Represents the definition of a single character in a <see cref="BitmapFont" />
-  /// </summary>
-  public struct Character
+    /// <summary>
+    ///     Represents the definition of a single character in a <see cref="BitmapFont" />
+    /// </summary>
+    public struct Character
     {
         #region Public Fields
 

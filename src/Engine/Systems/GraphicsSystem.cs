@@ -1,6 +1,6 @@
-﻿using Reactor.Platform;
+﻿using Red.Platform;
 
-namespace Reactor.Systems
+namespace Red.Systems
 {
     public static class GraphicsSystem
     {
@@ -19,6 +19,6 @@ namespace Reactor.Systems
                 GPU.Instance.ProcessEvents();
             }
         }
-        
+
     }
 }

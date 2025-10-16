@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     /// <summary>
     ///     Convenience class for handling ALContext attributes.

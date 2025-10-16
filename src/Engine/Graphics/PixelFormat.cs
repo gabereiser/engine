@@ -1,4 +1,4 @@
-﻿namespace Reactor.Graphics
+﻿namespace Red.Graphics
 {
     public enum PixelFormat
     {

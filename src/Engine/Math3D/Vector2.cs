@@ -26,7 +26,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Reactor.Math3D
+namespace Red.Math3D
 {
     [StructLayout(LayoutKind.Explicit, Size = 8, Pack = 4)]
     public struct Vector2 : IEquatable<Vector2>
@@ -608,9 +608,9 @@ namespace Reactor.Math3D
         }
 
         /// <summary>
-        ///     Converts a Reactor Vector2 to a System Numerics Vector2 (supposedly they are fast.)
+        ///     Converts a Red Vector2 to a System Numerics Vector2 (supposedly they are fast.)
         /// </summary>
-        /// <param name="value">a Reactor Vector2</param>
+        /// <param name="value">a Red Vector2</param>
         /// <returns>a System Numerics Vector2</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator System.Numerics.Vector2(Vector2 value)
@@ -619,10 +619,10 @@ namespace Reactor.Math3D
         }
 
         /// <summary>
-        ///     Converts a System Numerics Vector2 to a Reactor Vector2 (supposedly they are just as fast.)
+        ///     Converts a System Numerics Vector2 to a Red Vector2 (supposedly they are just as fast.)
         /// </summary>
         /// <param name="value">a System Numerics Vector2</param>
-        /// <returns>a Reactor Vector2</returns>
+        /// <returns>a Red Vector2</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Vector2(System.Numerics.Vector2 value)
         {

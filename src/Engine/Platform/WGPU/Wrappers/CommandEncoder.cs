@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-using static Reactor.Platform.WGPU.Wgpu;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public struct RenderPassColorAttachment
     {
@@ -66,7 +66,7 @@ namespace Reactor.Platform.WGPU.Wrappers
         public Buffer Buffer;
 
         public TextureDataLayout TextureDataLayout;
-        
+
         public static implicit operator Wgpu.ImageCopyBuffer(ImageCopyBuffer t)
         {
             return new Wgpu.ImageCopyBuffer
@@ -82,7 +82,7 @@ namespace Reactor.Platform.WGPU.Wrappers
     {
         private CommandEncoderImpl _impl;
 
-        internal CommandEncoderImpl Impl 
+        internal CommandEncoderImpl Impl
         {
             get
             {
@@ -113,7 +113,7 @@ namespace Reactor.Platform.WGPU.Wrappers
             );
         }
 
-        public RenderPassEncoder BeginRenderPass(string label, 
+        public RenderPassEncoder BeginRenderPass(string label,
             RenderPassColorAttachment[] colorAttachments,
             RenderPassDepthStencilAttachment? depthStencilAttachment
             )
@@ -155,18 +155,22 @@ namespace Reactor.Platform.WGPU.Wrappers
 
             unsafe
             {
-                RenderPassEncoder encoder = new RenderPassEncoder(
-                    CommandEncoderBeginRenderPass(Impl, new RenderPassDescriptor
-                    {
-                        label = label,
-                        colorAttachments = new IntPtr(Unsafe.AsPointer(ref colorAttachmentsInner.GetPinnableReference())),
-                        colorAttachmentCount = (uint)colorAttachments.Length,
-                        depthStencilAttachment =
-                            depthStencilAttachment != null ? new IntPtr(&depthStencilAttachmentInner) : IntPtr.Zero
-                    })
-                );
+                fixed (Wgpu.RenderPassColorAttachment* pColorAttachments = colorAttachmentsInner)
+                {
+                    RenderPassEncoder encoder = new RenderPassEncoder(
+                        CommandEncoderBeginRenderPass(Impl, new RenderPassDescriptor
+                        {
+                            label = label,
+                            colorAttachments = pColorAttachments,
+                            colorAttachmentCount = (uint)colorAttachments.Length,
+                            depthStencilAttachment =
+                                depthStencilAttachment != null ? &depthStencilAttachmentInner : null
+                        })
+                    );
 
-                return encoder;
+
+                    return encoder;
+                }
             }
         }
 
@@ -208,7 +212,7 @@ namespace Reactor.Platform.WGPU.Wrappers
 
         public void WriteTimestamp(QuerySet querySet, uint queryIndex)
             => CommandEncoderWriteTimestamp(Impl, querySet.Impl, queryIndex);
-        
+
         public void Dispose()
         {
             CommandEncoderRelease(Impl);

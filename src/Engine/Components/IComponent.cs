@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Reactor.Components
+namespace Red.Components
 {
     public interface IComponent
     {
@@ -9,6 +9,6 @@ namespace Reactor.Components
         void Deactivate();
 
         void Update(double time);
-        
+
     }
 }

@@ -25,7 +25,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace Reactor.Common
+namespace Red.Common
 {
     public enum LogLevel
     {
@@ -39,7 +39,7 @@ namespace Reactor.Common
     {
         public static bool Enabled { get; set; } = false;
         public static LogLevel Level { get; set; } = LogLevel.INFO;
-        
+
         internal static string LogPath = "debug.log";
         internal static object mutex = new object();
 

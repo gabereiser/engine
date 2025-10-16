@@ -10,7 +10,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Reactor.Audio.OpenAL
+namespace Red.Audio.OpenAL
 {
     /// <summary>
     ///     Handle to an OpenAL capture device.
@@ -31,7 +31,7 @@ namespace Reactor.Audio.OpenAL
             return obj is ALCaptureDevice device && Equals(device);
         }
 
-        public bool Equals( ALCaptureDevice other)
+        public bool Equals(ALCaptureDevice other)
         {
             return Handle.Equals(other.Handle);
         }

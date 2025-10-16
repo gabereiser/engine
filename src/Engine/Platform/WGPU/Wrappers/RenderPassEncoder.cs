@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static Reactor.Platform.WGPU.Wgpu;
+using static Red.Platform.WGPU.Wgpu;
 
-namespace Reactor.Platform.WGPU.Wrappers
+namespace Red.Platform.WGPU.Wrappers
 {
     public class RenderPassEncoder : IDisposable
     {
@@ -78,13 +78,19 @@ namespace Reactor.Platform.WGPU.Wrappers
 
         public void SetPipeline(RenderPipeline pipeline) => RenderPassEncoderSetPipeline(_impl, pipeline.Impl);
 
-        public unsafe void SetPushConstants<T>(ShaderStage stages, uint offset, ReadOnlySpan<T> data)
+        public void SetPushConstants<T>(ShaderStage stages, uint offset, ReadOnlySpan<T> data)
             where T : unmanaged
         {
-            RenderPassEncoderSetPushConstants(
-                           _impl, (uint)stages, offset, (uint)(data.Length * sizeof(T)),
-                           (IntPtr)Unsafe.AsPointer(ref MemoryMarshal.GetReference(data))
-                       );
+            unsafe
+            {
+                fixed (void* dataPtr = data)
+                {
+                    RenderPassEncoderSetPushConstants(
+                                   _impl, (uint)stages, offset, (uint)(data.Length * sizeof(T)),
+                                   dataPtr
+                               );
+                }
+            }
         }
 
         public void SetScissorRect(uint x, uint y, uint width, uint height)
