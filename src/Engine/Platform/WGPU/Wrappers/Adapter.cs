@@ -35,19 +35,22 @@ namespace Red.Platform.WGPU.Wrappers
         }
 
 
-        public unsafe FeatureName[] EnumerateFeatures()
+        public FeatureName[] EnumerateFeatures()
         {
-            FeatureName features = default;
+            unsafe
+            {
+                FeatureName features = default;
 
-            ulong size = AdapterEnumerateFeatures(Impl, ref features);
+                ulong size = AdapterEnumerateFeatures(Impl, ref features);
 
-            var featuresSpan = new Span<FeatureName>(Unsafe.AsPointer(ref features), (int)size);
+                var featuresSpan = new Span<FeatureName>(Unsafe.AsPointer(ref features), (int)size);
 
-            FeatureName[] result = new FeatureName[size];
+                FeatureName[] result = new FeatureName[size];
 
-            featuresSpan.CopyTo(result);
+                featuresSpan.CopyTo(result);
 
-            return result;
+                return result;
+            }
         }
 
         public bool GetLimits(out SupportedLimits limits)
@@ -101,22 +104,28 @@ namespace Red.Platform.WGPU.Wrappers
             GCHandle losthandle = default;
             var lostcontext = new Callback<Wgpu.DeviceLostReason>
             {
-                Delegate = (s, m, userData) => deviceLostCallback.Invoke(s, m),
+                Delegate = (s, m, userData) =>
+                {
+                    if (losthandle.IsAllocated) losthandle.Free();
+                    deviceLostCallback.Invoke(s, m);
+                },
                 UserData = IntPtr.Zero,
             };
 
             GCHandle handle = default;
             var context = new CallbackContext<RequestDeviceStatus, DeviceImpl>
             {
-                Delegate = (s, d, m, userData) => callback.Invoke(s, new Device(d), m),
+                Delegate = (s, d, m, userData) =>
+                {
+                    if (handle.IsAllocated) handle.Free();
+                    callback.Invoke(s, new Device(d), m);
+                },
                 UserData = IntPtr.Zero
             };
             handle = GCHandle.Alloc(context);
             losthandle = GCHandle.Alloc(lostcontext);
-            IntPtr pLabel = IntPtr.Zero;
             try
             {
-                pLabel = Marshal.StringToHGlobalAnsi(label);
                 unsafe
                 {
                     fixed (NativeFeature* requiredFeatures = nativeFeatures)
@@ -135,11 +144,9 @@ namespace Red.Platform.WGPU.Wrappers
                     }
                 }
             }
-            finally
+            catch
             {
-                if (handle.IsAllocated) handle.Free();
-                if (losthandle.IsAllocated) losthandle.Free();
-                if (pLabel != IntPtr.Zero) Marshal.FreeHGlobal(pLabel);
+                throw;
             }
 
             limitsExtrasChain?.Dispose();
@@ -153,7 +160,7 @@ namespace Red.Platform.WGPU.Wrappers
             try
             {
                 var context = (Callback<DeviceLostReason>)handle.Target;
-                string messageStr = (message == null) ? null : Encoding.UTF8.GetString(new ReadOnlySpan<byte>(message, int.MaxValue).Slice(0, (int)Util.StrLen(message)));
+                string messageStr = (message == null) ? null : Encoding.UTF8.GetString(new ReadOnlySpan<byte>(message, int.MaxValue)[..(int)Util.StrLen(message)]);
                 context.Delegate?.Invoke(reason, messageStr, context.UserData);
             }
             finally

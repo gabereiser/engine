@@ -20,12 +20,13 @@ namespace Red.Platform.WGPU.Wrappers
 
         public void OnSubmittedWorkDone(QueueWorkDoneCallback callback)
         {
+            GCHandle handle = default;
             var context = new Callback<QueueWorkDoneStatus>
             {
-                Delegate = (s, m, userData) => callback(s),
+                Delegate = (s, m, userData) => { if (handle.IsAllocated) handle.Free(); callback(s); },
                 UserData = IntPtr.Zero,
             };
-            var handle = GCHandle.Alloc(context);
+            handle = GCHandle.Alloc(context);
             try
             {
                 unsafe
@@ -33,9 +34,10 @@ namespace Red.Platform.WGPU.Wrappers
                     QueueOnSubmittedWorkDone(_impl, &QueueWorkDoneCallback, (void*)GCHandle.ToIntPtr(handle));
                 }
             }
-            finally
+            catch
             {
                 if (handle.IsAllocated) handle.Free();
+                throw;
             }
         }
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]

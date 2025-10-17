@@ -62,7 +62,11 @@ namespace Red.Platform.WGPU.Wrappers
             GCHandle handle = default;
             var context = new Callback<BufferMapAsyncStatus>
             {
-                Delegate = (s, m, _) => callback.Invoke(s)
+                Delegate = (s, m, _) =>
+                {
+                    if (handle.IsAllocated) handle.Free();
+                    callback.Invoke(s);
+                }
             };
             handle = GCHandle.Alloc(context);
             try
@@ -72,9 +76,10 @@ namespace Red.Platform.WGPU.Wrappers
                     BufferMapAsync(Impl, (uint)mode, offset, size, &BufferMapCallback, (void*)GCHandle.ToIntPtr(handle));
                 }
             }
-            finally
+            catch
             {
                 if (handle.IsAllocated) handle.Free();
+                throw;
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -180,13 +181,18 @@ namespace Red.Platform.WGPU.Wrappers
 
         public void CreateComputePipelineAsync(string label, CreateComputePipelineAsyncCallback callback, ProgrammableStageDescriptor compute)
         {
+            GCHandle handle = default;
             var context = new CallbackContext<Wgpu.CreatePipelineAsyncStatus, Wgpu.ComputePipelineImpl>
             {
-                Delegate = (s, p, m, userData) => callback?.Invoke(s, new ComputePipeline(p), m),
+                Delegate = (s, p, m, userData) =>
+                {
+                    if (handle.IsAllocated) handle.Free();
+                    callback?.Invoke(s, new ComputePipeline(p), m);
+                },
                 UserData = IntPtr.Zero,
             };
 
-            var handle = GCHandle.Alloc(context);
+            handle = GCHandle.Alloc(context);
             try
             {
                 unsafe
@@ -203,9 +209,10 @@ namespace Red.Platform.WGPU.Wrappers
                     );
                 }
             }
-            finally
+            catch
             {
                 if (handle.IsAllocated) handle.Free();
+                throw;
             }
         }
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -310,16 +317,18 @@ namespace Red.Platform.WGPU.Wrappers
             DepthStencilState? depthStencilState = null, FragmentState? fragmentState = null)
         {
             RenderPipelineDescriptor desc = CreateRenderPipelineDescriptor(label, layout, vertexState, primitiveState, multisampleState, depthStencilState, fragmentState);
+            GCHandle handle = default;
             var context = new CallbackContext<Wgpu.CreatePipelineAsyncStatus, RenderPipelineImpl>
             {
                 Delegate = (s, p, m, userData) =>
                 {
                     FreeRenderPipelineDescriptor(desc);
+                    if (handle.IsAllocated) handle.Free();
                     callback?.Invoke(s, new RenderPipeline(p), m);
                 },
                 UserData = IntPtr.Zero,
             };
-            var handle = GCHandle.Alloc(context);
+            handle = GCHandle.Alloc(context);
             try
             {
                 unsafe
@@ -327,9 +336,10 @@ namespace Red.Platform.WGPU.Wrappers
                     DeviceCreateRenderPipelineAsync(Impl, desc, &CreateRenderPipelineAsyncCallback, (void*)GCHandle.ToIntPtr(handle));
                 }
             }
-            finally
+            catch
             {
                 if (handle.IsAllocated) handle.Free();
+                throw;
             }
         }
 
@@ -413,11 +423,14 @@ namespace Red.Platform.WGPU.Wrappers
                 if (descriptor.fragment == null)
                     return;
 
-                Wgpu.FragmentState* fragment = (Wgpu.FragmentState*)descriptor.fragment;
-                Wgpu.ColorTargetState* targets = (Wgpu.ColorTargetState*)fragment->targets;
+                Wgpu.FragmentState* fragment = descriptor.fragment;
+                Wgpu.ColorTargetState* targets = fragment->targets;
 
                 for (ulong i = 0; i < fragment->targetCount; i++)
+                {
                     Util.FreePtr((nint)targets[i].blend);
+                    Util.FreePtr((nint)targets[i].nextInChain);
+                }
 
                 Util.FreePtr((nint)fragment->targets);
                 Util.FreePtr((nint)descriptor.fragment);
@@ -566,12 +579,13 @@ namespace Red.Platform.WGPU.Wrappers
         public void PushErrorScope(ErrorFilter filter) => DevicePushErrorScope(Impl, filter);
         public void PopErrorScope(ErrorCallback callback)
         {
+            GCHandle handle = default;
             var context = new Callback<ErrorType>
             {
-                Delegate = (t, m, _) => callback?.Invoke(t, m),
+                Delegate = (t, m, _) => { if (handle.IsAllocated) handle.Free(); callback?.Invoke(t, m); },
                 UserData = IntPtr.Zero,
             };
-            var handle = GCHandle.Alloc(context);
+            handle = GCHandle.Alloc(context);
             try
             {
                 unsafe
@@ -581,9 +595,10 @@ namespace Red.Platform.WGPU.Wrappers
                         (void*)GCHandle.ToIntPtr(handle));
                 }
             }
-            finally
+            catch
             {
                 if (handle.IsAllocated) handle.Free();
+                throw;
             }
         }
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -613,12 +628,13 @@ namespace Red.Platform.WGPU.Wrappers
 
             s_errorCallbacks.Add(errorCallback);
 
+            GCHandle handle = default;
             var context = new Callback<ErrorType>
             {
-                Delegate = (t, m, _) => callback?.Invoke(t, m),
+                Delegate = (t, m, _) => { if (handle.IsAllocated) handle.Free(); callback?.Invoke(t, m); },
                 UserData = IntPtr.Zero,
             };
-            var handle = GCHandle.Alloc(context);
+            handle = GCHandle.Alloc(context);
             try
             {
                 unsafe
@@ -627,9 +643,10 @@ namespace Red.Platform.WGPU.Wrappers
                         &DeviceSetUncapturedCallback, (void*)GCHandle.ToIntPtr(handle));
                 }
             }
-            finally
+            catch
             {
                 if (handle.IsAllocated) handle.Free();
+                throw;
             }
         }
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]

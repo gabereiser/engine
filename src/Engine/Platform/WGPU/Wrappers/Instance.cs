@@ -119,12 +119,13 @@ namespace Red.Platform.WGPU.Wrappers
 
         public void RequestAdapter(Surface compatibleSurface, PowerPreference powerPreference, bool forceFallbackAdapter, RequestAdapterCallback callback, BackendType backendType)
         {
+            GCHandle handle = default;
             var context = new CallbackContext<RequestAdapterStatus, AdapterImpl>
             {
-                Delegate = (s, p, m, _) => callback?.Invoke(s, new Adapter(p), m),
+                Delegate = (s, p, m, _) => { if (handle.IsAllocated) handle.Free(); callback?.Invoke(s, new Adapter(p), m); },
                 UserData = IntPtr.Zero,
             };
-            var handle = GCHandle.Alloc(context);
+            handle = GCHandle.Alloc(context);
             try
             {
                 unsafe
@@ -140,9 +141,10 @@ namespace Red.Platform.WGPU.Wrappers
                         &RequestAdapterCallback, (void*)GCHandle.ToIntPtr(handle));
                 }
             }
-            finally
+            catch
             {
                 if (handle.IsAllocated) handle.Free();
+                throw;
             }
         }
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]

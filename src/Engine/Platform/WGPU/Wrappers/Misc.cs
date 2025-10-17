@@ -207,19 +207,25 @@ namespace Red.Platform.WGPU.Wrappers
         {
             unsafe
             {
+                GCHandle handle = default;
                 var context = new CallbackContext<CompilationInfoRequestStatus, CompilationInfo>
                 {
-                    Delegate = (s, p, m, userData) => callback?.Invoke(s, new ReadOnlySpan<CompilationMessage>(p.messages, (int)p.messages)),
+                    Delegate = (s, p, m, userData) =>
+                    {
+                        if (handle.IsAllocated) handle.Free();
+                        callback?.Invoke(s, new ReadOnlySpan<CompilationMessage>(p.messages, (int)p.messages));
+                    },
                     UserData = IntPtr.Zero,
                 };
-                var handle = GCHandle.Alloc(context);
+                handle = GCHandle.Alloc(context);
                 try
                 {
                     ShaderModuleGetCompilationInfo(Impl, &GetCompilationInfoCallback, (void*)GCHandle.ToIntPtr(handle));
                 }
-                finally
+                catch
                 {
                     if (handle.IsAllocated) handle.Free();
+                    throw;
                 }
             }
         }
